@@ -13,7 +13,7 @@ const toggleTheme = () => {
 </script>
 
 <template>
-    <div class="absolute bottom-0 left-0 w-full">
+    <div class="absolute bottom-0 left-0 w-full max-h-7">
         <div
             class="flex items-center justify-between w-full bg-neutral-200 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 px-2 py-1 border-t border-neutral-300 dark:border-neutral-700 text-xs">
 
