@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue';
 import StatusBar from './components/StatusBar.vue';
+import Editor from './components/Editor.vue';
 
 const inputRef = ref<HTMLTextAreaElement | null>(null);
 const value = ref<string>(window.localStorage.getItem('text-editor-content') ?? '');
@@ -17,9 +18,7 @@ onMounted(() => {
 watch(
   ()=>value.value, 
   (newVal:string) => {
-    if(newVal){
-      window.localStorage.setItem('text-editor-content', newVal);
-    }
+    window.localStorage.setItem('text-editor-content', newVal ?? '');
 }, { immediate: true });
 
 // add event listener cmd + o to open file
@@ -51,9 +50,7 @@ const handleFileOpen = (event: Event) => {
 
 <template>
   <main class="relative h-screen w-screen">
-    <textarea v-model="value"
-      class="w-full h-screen p-4 text-lg bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white border-none outline-none resize-none font-mono"
-      placeholder="Type your text here...&#10;&#10;or press `cmd + o` to open file."></textarea>
+    <Editor v-model="value" />
     <input ref="inputRef" type="file" id="fileInput" class="hidden" accept="text/plain" @change="handleFileOpen" />
     <StatusBar :value="value" />
   </main>
