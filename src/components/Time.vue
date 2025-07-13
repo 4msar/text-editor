@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue';
-import { formatDate } from '../utils';
+import { formatDate } from '../lib/utils';
 
 const time = ref(new Date());
 const timer = ref<number | null>(null);
