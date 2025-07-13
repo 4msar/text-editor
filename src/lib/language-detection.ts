@@ -49,118 +49,97 @@ export const languageColorClasses: Record<LanguageName, string> = {
     plaintext: "text-neutral-900 dark:text-neutral-200", // Default for unrecognized languages
 };
 
-// Language detection patterns
-export const languages: { name: LanguageName; pattern: RegExp }[] = [
-    {
-        name: "javascript",
-        pattern:
-            /(?:\b(?:function|var|let|const|if|else|for|while|return|class|import|export|<script)\b)/i,
-    },
+// Language detection match
+export const languages: { name: LanguageName; match: RegExp }[] = [
     {
         name: "typescript",
-        pattern:
-            /(?:\b(?:interface|type|implements|enum|as|from\s+['"][^'"]+['"];?|import\s+type)\b)/i,
+        match: /```(ts|typescript|tsx)/i,
     },
     {
         name: "python",
-        pattern:
-            /(?:\b(?:def |import |from |print\(|self|elif|except|lambda|with |as |class )\b)/,
+        match: /```(py|python)/i,
     },
     {
         name: "java",
-        pattern:
-            /(?:\b(?:public |private |protected |static |void |class |interface |implements |extends |new |package |import )\b)/,
+        match: /```java/i,
     },
     {
         name: "c",
-        pattern:
-            /(?:\b(?:#include <stdio\.h>|int main\s*\(|printf\(|scanf\(|#define|typedef|struct )\b)/,
+        match: /```c(?!\+|#)/i,
     },
     {
         name: "c++",
-        pattern:
-            /(?:\b(?:#include <iostream>|std::|cout|cin|new |delete |class |template |typename|::)\b)/,
+        match: /```(c\+\+|cpp)/i,
     },
     {
         name: "c#",
-        pattern:
-            /(?:\b(?:using System|namespace |public |private |protected |class |void |static |new |override |async |await|var |Console\.WriteLine)\b)/,
+        match: /```(c#|csharp)/i,
     },
     {
         name: "ruby",
-        pattern:
-            /(?:\b(?:def |end|class |module |puts |require |attr_accessor|unless|elsif|yield|begin|rescue)\b)/,
+        match: /```(rb|ruby)/i,
     },
     {
         name: "php",
-        pattern:
-            /(?:<\?php|echo |->|function |public |private |protected |\$[a-zA-Z_][a-zA-Z0-9_]*|use |namespace )/i,
+        match: /```php/i,
     },
     {
         name: "go",
-        pattern:
-            /(?:\b(?:package |import |func |fmt\.|go |chan |defer |struct |interface |map\[)\b)/,
+        match: /```(go|golang)/i,
     },
     {
         name: "rust",
-        pattern:
-            /(?:\b(?:fn |let |mut |pub |impl |trait |enum |use |mod |crate::|::)\b)/,
+        match: /```(rs|rust)/i,
     },
     {
         name: "swift",
-        pattern:
-            /(?:\b(?:import |func |let |var |class |struct |protocol |extension |guard |defer|if let|as\?|as!|try |catch )\b)/,
+        match: /```swift/i,
+    },
+    {
+        name: "javascript",
+        match: /```(js|javascript|jsx)/i,
     },
     {
         name: "kotlin",
-        pattern:
-            /(?:\b(?:fun |val |var |class |object |companion |data class|sealed class|interface|when |is |as |import )\b)/,
+        match: /```(kt|kotlin)/i,
     },
     {
         name: "dart",
-        pattern:
-            /(?:\b(?:import |class |void |final |var |dynamic|@override|async |await|Future<|Stream<|new )\b)/,
+        match: /```dart/i,
     },
     {
         name: "html",
-        pattern:
-            /(?:<!DOCTYPE html>|<html[\s>]|<body[\s>]|<div[\s>]|<span[\s>]|<head[\s>]|<meta[\s>]|<title[\s>])/i,
+        match: /```html/i,
     },
     {
         name: "css",
-        pattern:
-            /(?:\b(?:[.#]?[a-zA-Z0-9_-]+\s*\{|\:[a-zA-Z-]+\s?:|\@[a-zA-Z]+\s))/,
+        match: /```css/i,
     },
     {
         name: "scss",
-        pattern:
-            /(?:\b(?:\$[a-zA-Z0-9_-]+:|@mixin |@include |@extend |&:|#{|\s{2,}\{))/,
+        match: /```(scss|sass)/i,
     },
     {
         name: "json",
-        pattern:
-            /(?:^\s*{[\s\S]*}\s*$|^\s*\[[\s\S]*]\s*$|"(?:\\.|[^"\\])*"\s*:)/,
+        match: /```json/i,
     },
     {
         name: "markdown",
-        pattern:
-            /(?:^(#|##|###|####|#####|######)\s|^\s*[-*+]\s|!\[.*\]\(.*\)|\*{1,2}[^*]+\*{1,2}|`{1,3}[^`]+`{1,3})/m,
+        match: /```(md|markdown)/i,
     },
     {
         name: "sql",
-        pattern:
-            /(?:\b(?:SELECT |INSERT INTO |UPDATE |DELETE FROM |CREATE TABLE |ALTER TABLE |DROP TABLE |WHERE |JOIN |ON |GROUP BY|ORDER BY)\b)/i,
+        match: /```sql/i,
     },
     {
         name: "shell",
-        pattern:
-            /(?:\b(?:#!\/bin\/bash|echo |if |then |else |fi |for |while |do |done |function |export |alias )\b)/i,
+        match: /```(sh|shell|bash|zsh)/i,
     },
 ];
 
 // Utility: detect language from code snippet
 export function detectLanguage(code: string): LanguageName | undefined {
-    return languages.find((lang) => lang.pattern.test(code))?.name;
+    return languages.find((lang) => lang.match.test(code))?.name;
 }
 
 // Utility: get Tailwind CSS classes for a detected language

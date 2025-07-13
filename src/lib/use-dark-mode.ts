@@ -1,5 +1,7 @@
 import { ref, onMounted, onUnmounted } from "vue";
 
+export type Theme = "dark" | "light" | "system";
+
 /**
  * Composable for handling dark mode detection and switching
  */
@@ -20,7 +22,7 @@ export function useDarkMode() {
     };
 
     // Store preference
-    const setStoredPreference = (theme: "dark" | "light" | "system") => {
+    const setStoredPreference = (theme: Theme) => {
         localStorage.setItem("theme-preference", theme);
     };
 
@@ -52,7 +54,7 @@ export function useDarkMode() {
     };
 
     // Set theme explicitly
-    const setTheme = (theme: "dark" | "light" | "system") => {
+    const setTheme = (theme: Theme) => {
         if (theme === "system") {
             const systemDark = checkSystemPreference();
             applyTheme(systemDark);
@@ -92,6 +94,7 @@ export function useDarkMode() {
 
     return {
         isDark,
+        theme: localStorage.getItem("theme-preference") ?? "system",
         toggleTheme,
         setTheme,
         initializeTheme,
