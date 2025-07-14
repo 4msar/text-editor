@@ -14,7 +14,7 @@ defineEmits<{
 </script>
 
 <template>
-    <div class="absolute bottom-0 left-0 w-full max-h-7">
+    <div class="md:absolute bottom-0 left-0 w-full max-h-7">
         <div
             class="flex items-center justify-start md:justify-between w-full bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 px-2 py-1 border-t border-slate-300 dark:border-slate-700 text-xs">
             <div
