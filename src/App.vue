@@ -11,12 +11,12 @@ const settingDialogOpen = ref(false);
 const value = useStorage('text-editor-content', '');
 
 // add event listener `cmd + o` or `ctrl + o` to open file
-useKeyboardShortcut(['cmd+o', 'ctrl+o'],() => {
+useKeyboardShortcut(['cmd+o', 'ctrl+o'], () => {
   inputRef.value?.click();
 });
 
 // add event listener `cmd + ,` or `ctrl + ,` to open settings dialog
-useKeyboardShortcut(['cmd+,', 'ctrl+,'],() => {
+useKeyboardShortcut(['cmd+,', 'ctrl+,'], () => {
   settingDialogOpen.value = true;
 });
 
@@ -66,7 +66,7 @@ const supportedFileType = '.txt,.md,.json,.js,.ts,.html,.css,.vue,.xml,.yaml,.ym
 </script>
 
 <template>
-  <main class="relative h-screen w-screen">
+  <main class="relative h-screen w-screen flex flex-col items-center justify-center">
     <Editor v-model="value" />
     <input ref="inputRef" type="file" id="fileInput" class="hidden" :accept="supportedFileType"
       @change="handleFileOpen" />

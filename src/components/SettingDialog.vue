@@ -10,10 +10,13 @@ defineEmits<{
     (e: 'close'): void;
 }>();
 
-const {theme, setTheme}=useDarkMode()
+const { theme, setTheme } = useDarkMode();
 
-const settings = useStorage("settings", {
-    fontSize: "16px",
+import type { Settings } from '../type';
+
+const settings = useStorage<Settings>("settings", {
+    fontSize: "16",
+    ui: "auto"
 });
 
 
@@ -25,8 +28,7 @@ const handleThemeChange = (event: Event) => {
 
 </script>
 <template>
-    <div v-if="open"
-        class="fixed inset-0 z-50 flex items-center justify-center dark:bg-neutral-900/50 bg-neutral-200/50"
+    <div v-if="open" class="fixed inset-0 z-50 flex items-center justify-center dark:bg-slate-900/50 bg-slate-200/50"
         @click.self="$emit('close')" style="backdrop-filter: blur(2px);">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-md space-y-6">
             <h2 class="text-xl text-black dark:text-white font-semibold mb-4">Settings</h2>
@@ -39,6 +41,16 @@ const handleThemeChange = (event: Event) => {
                         <option value="light">Light</option>
                         <option value="dark">Dark</option>
                         <option value="system">System Default</option>
+                    </select>
+                </fieldset>
+                <fieldset>
+                    <legend class="text-lg font-medium">UI</legend>
+                    <p class="text-sm">Choose your preferred UI:</p>
+                    <select v-model="settings.ui"
+                        class="w-full p-2 border border-gray-300 dark:border-gray-700 rounded bg-white dark:bg-gray-800 text-black dark:text-white">
+                        <option value="auto">Auto</option>
+                        <option value="box">Box</option>
+                        <option value="fluid">Full Width</option>
                     </select>
                 </fieldset>
                 <fieldset>

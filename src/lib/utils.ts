@@ -1,5 +1,8 @@
 import type { Ref } from "vue";
 
+export const cn = (...classes: (string | undefined)[]) =>
+    classes.filter(Boolean).join(" ");
+
 export const formatDate = (date: Date): string => {
     // expected format: "Wed, 03 Jul, 12:00 AM"
     const options: Intl.DateTimeFormatOptions = {

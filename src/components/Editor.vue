@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useLanguageClass } from '../lib/use-language-class';
 import { useStorage } from '@vueuse/core';
-import { inputShortcutHandler } from '../lib/utils';
+import { cn, inputShortcutHandler } from '../lib/utils';
+import type { Settings } from '../type';
+import Logo from './Logo.vue';
 
 const inputRef = ref<HTMLTextAreaElement | null>(null);
 
@@ -31,8 +33,21 @@ onUnmounted(() => {
     }
 });
 
-const settings = useStorage("settings", {
-    fontSize: "16px",
+const settings = useStorage<Settings>("settings", {
+    fontSize: "16",
+    ui: "auto"
+});
+
+const uiClass = computed(() => {
+    if (settings.value.ui === "auto") {
+        return "w-full h-screen border-none";
+    }
+    if (settings.value.ui === "box") {
+        return "w-2/3 mx-auto shadow-md aspect-16/9 h-2/3 border border-slate-300 dark:border-slate-700 rounded-md";
+    }
+    if (settings.value.ui === "fluid") {
+        return "w-full h-screen border-none";
+    }
 });
 
 
@@ -40,7 +55,8 @@ const placeholder = "Start writing...\n\nPress `cmd + o` to open file.\nPress `c
 </script>
 
 <template>
+    <Logo class="text-black dark:text-white size-8 mb-4" v-if="settings.ui === 'box'" />
     <textarea ref="inputRef" v-model="value" id="editor" autofocus
-        class="editor w-full h-screen p-4 pb-7 text-base bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white border-none outline-none resize-none font-mono placeholder:text-neutral-400 dark:placeholder:text-neutral-600"
-        :class="classes" :placeholder="placeholder" :style="{ fontSize: `${settings.fontSize}px` }" />
+        class="editor bg-editor p-4 pb-7 text-base text-black dark:text-white outline-none resize-none font-mono placeholder:text-slate-400 dark:placeholder:text-slate-600"
+        :class="cn(classes, uiClass)" :placeholder="placeholder" :style="{ fontSize: `${settings.fontSize}px` }" />
 </template>

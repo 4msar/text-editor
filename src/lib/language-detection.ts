@@ -46,7 +46,7 @@ export const languageColorClasses: Record<LanguageName, string> = {
     json: "text-gray-700 dark:text-gray-300",
     markdown: "text-gray-600 dark:text-gray-400",
     sql: "text-indigo-600 dark:text-indigo-400",
-    plaintext: "text-neutral-900 dark:text-neutral-200", // Default for unrecognized languages
+    plaintext: "text-slate-900 dark:text-slate-200", // Default for unrecognized languages
 };
 
 // Language detection match
@@ -144,7 +144,6 @@ export function detectLanguage(code: string): LanguageName | undefined {
 
 // Utility: get Tailwind CSS classes for a detected language
 export function getLanguageClass(language: LanguageName): string {
-    return `${
-        languageColorClasses[language] || languageColorClasses.plaintext
-    } ${language}`;
+    return `${languageColorClasses[language] || languageColorClasses.plaintext
+        } ${language}`;
 }
