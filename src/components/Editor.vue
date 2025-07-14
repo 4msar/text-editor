@@ -43,7 +43,7 @@ const uiClass = computed(() => {
         return "w-full h-screen border-none";
     }
     if (settings.value.ui === "box") {
-        return "w-2/3 mx-auto shadow-md aspect-16/9 h-2/3 border border-slate-300 dark:border-slate-700 rounded-md";
+        return "w-full md:w-2/3 mx-auto shadow-md aspect-16/9 h-full md:h-2/3 border border-slate-300 dark:border-slate-700 rounded-md";
     }
     if (settings.value.ui === "fluid") {
         return "w-full h-screen border-none";
@@ -55,7 +55,7 @@ const placeholder = "Start writing...\n\nPress `cmd + o` to open file.\nPress `c
 </script>
 
 <template>
-    <Logo class="text-black dark:text-white size-8 mb-4" v-if="settings.ui === 'box'" />
+    <Logo class="text-black dark:text-white size-16 m-4" v-if="settings.ui === 'box'" />
     <textarea ref="inputRef" v-model="value" id="editor" autofocus
         class="editor bg-editor p-4 pb-7 text-base text-black dark:text-white outline-none resize-none font-mono placeholder:text-slate-400 dark:placeholder:text-slate-600"
         :class="cn(classes, uiClass)" :placeholder="placeholder" :style="{ fontSize: `${settings.fontSize}px` }" />

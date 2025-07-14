@@ -2,9 +2,14 @@
 import Time from './Time.vue';
 import ThemeToggle from './ThemeToggle.vue';
 import GithubButtonVue from './GithubButton.vue';
+import SettingsButton from './SettingsButton.vue';
 
 const { value } = defineProps<{
     value: string;
+}>();
+
+defineEmits<{
+    (e: 'open-setting'): void;
 }>();
 </script>
 
@@ -16,14 +21,15 @@ const { value } = defineProps<{
                 class="hidden md:flex justify-start items-center *:not-[:last-child]:after:content-['|'] *:not-[:last-child]:after:px-1">
                 <span>Chars: {{ value.length }}</span>
                 <span>Words: {{ value.trim().split(/\s+/).filter(Boolean).length
-                }}</span>
+                    }}</span>
                 <span>Lines: {{ value.split('\n').length }}</span>
             </div>
 
             <div class="flex flex-1 md:justify-end justify-between items-center gap-3">
                 <div class="flex items-center gap-2">
-                    <GithubButtonVue />
+                    <SettingsButton @click="$emit('open-setting')" />
                     <ThemeToggle />
+                    <GithubButtonVue />
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="hidden md:flex">Time:</span>

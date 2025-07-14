@@ -70,7 +70,7 @@ const supportedFileType = '.txt,.md,.json,.js,.ts,.html,.css,.vue,.xml,.yaml,.ym
     <Editor v-model="value" />
     <input ref="inputRef" type="file" id="fileInput" class="hidden" :accept="supportedFileType"
       @change="handleFileOpen" />
-    <StatusBar :value="value" />
+    <StatusBar :value="value" @open-setting="settingDialogOpen = true" />
     <SettingDialog :open="settingDialogOpen" @close="settingDialogOpen = false" />
   </main>
 </template>

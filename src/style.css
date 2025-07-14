@@ -17,8 +17,8 @@
     }
 
     .bg-body:not(.bgbody .bg-editor) {
-        --bg-line: rgba(75, 85, 99, 0.08);
-        --bg-dot: rgba(55, 65, 81, 0.12);
+        --bg-line: rgba(75, 85, 99, 0.05);
+        --bg-dot: rgba(55, 65, 81, 0.06);
 
         @variant dark {
             --bg-line: rgba(255, 255, 255, 0.04);
