@@ -43,7 +43,7 @@ const uiClass = computed(() => {
         return "w-full h-screen border-none";
     }
     if (settings.value.ui === "box") {
-        return "w-full md:w-2/3 mx-auto shadow-md aspect-16/9 h-9/10 md:h-2/3 border border-slate-300 dark:border-slate-700 rounded-md";
+        return "w-full md:w-2/3 mx-auto shadow-md aspect-16/9 h-4/5 md:h-2/3 border border-slate-300 dark:border-slate-700 rounded-md";
     }
     if (settings.value.ui === "fluid") {
         return "w-full h-screen border-none";
