@@ -66,7 +66,7 @@ const supportedFileType = '.txt,.md,.json,.js,.ts,.html,.css,.vue,.xml,.yaml,.ym
 </script>
 
 <template>
-  <main class="relative h-screen w-screen flex flex-col items-center justify-center">
+  <main class="relative h-svh md:h-screen w-screen flex flex-col items-center justify-center">
     <Editor v-model="value" />
     <input ref="inputRef" type="file" id="fileInput" class="hidden" :accept="supportedFileType"
       @change="handleFileOpen" />
