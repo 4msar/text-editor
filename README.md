@@ -18,13 +18,8 @@ A clean, simple, and powerful web-based text editor built with Vue 3, TypeScript
 
 **Live Demo**: [https://text.msar.me](https://text.msar.me)
 
-### Light Mode
-![Light Mode Demo](https://github.com/user-attachments/assets/bf107fc0-2f1a-4712-b1e3-49a7d94a6524)
-*Light mode with syntax highlighting and markdown support*
-
-### Dark Mode  
-![Dark Mode Demo](https://github.com/user-attachments/assets/64bc0831-1c44-491e-8681-4daff12fcc5b)
-*Dark mode showing the same content with syntax highlighting*
+![Light Mode Demo](./public/light.png)
+![Dark Mode Demo](./public/dark.png)
 
 ## 🔧 Installation
 
