@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Time from './Time.vue';
 import ThemeToggle from './ThemeToggle.vue';
+import GithubButtonVue from './GithubButton.vue';
 
 const {value}=defineProps<{
   value: string;
@@ -20,6 +21,7 @@ const {value}=defineProps<{
             </div>
 
             <div class="flex flex-1 md:justify-end justify-between items-center gap-3">
+                <GithubButtonVue />
                 <ThemeToggle />
                 <div class="flex items-center gap-2">
                     <span class="hidden md:flex">Time:</span>
