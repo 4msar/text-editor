@@ -16,7 +16,8 @@ import type { Settings } from '../type';
 
 const settings = useStorage<Settings>("settings", {
     fontSize: "16",
-    ui: "auto"
+    ui: "auto",
+    showLogo: true
 });
 
 
@@ -52,6 +53,20 @@ const handleThemeChange = (event: Event) => {
                         <option value="box">Box</option>
                         <option value="fluid">Full Width</option>
                     </select>
+                </fieldset>
+                <fieldset v-if="settings.ui === 'box'" class="flex items-center justify-between">
+                    <div>
+                        <legend class="text-lg font-medium">Logo</legend>
+                        <p class="text-sm">Show logo in the editor</p>
+                    </div>
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input type="checkbox" :checked="settings.showLogo" class="sr-only peer"
+                            v-model="settings.showLogo" />
+                        <div
+                            class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600">
+                        </div>
+                        <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Show</span>
+                    </label>
                 </fieldset>
                 <fieldset>
                     <legend class="text-lg font-medium">Font Size</legend>
