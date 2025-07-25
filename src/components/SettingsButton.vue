@@ -1,5 +1,5 @@
 <template>
-    <button
+    <button type="button" title="Settings"
         class="p-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 transition-colors"
         @click="$emit('open-setting')">
         <svg class="size-3" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor">

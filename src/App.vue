@@ -5,6 +5,7 @@ import Editor from './components/Editor.vue';
 import { useKeyboardShortcut } from './lib/use-keyboard-shortcut';
 import SettingDialog from './components/SettingDialog.vue';
 import { useStorage } from '@vueuse/core';
+import { hanbleDownload } from './lib/utils';
 
 const inputRef = ref<HTMLTextAreaElement | null>(null);
 const settingDialogOpen = ref(false);
@@ -18,6 +19,12 @@ useKeyboardShortcut(['cmd+o', 'ctrl+o'], () => {
 // add event listener `cmd + ,` or `ctrl + ,` to open settings dialog
 useKeyboardShortcut(['cmd+,', 'ctrl+,'], () => {
   settingDialogOpen.value = true;
+});
+
+useKeyboardShortcut(['cmd+s', 'ctrl+s'], () => {
+  if (value.value) {
+    hanbleDownload(value.value);
+  }
 });
 
 // add drag and drop event listener to the main element

@@ -78,3 +78,13 @@ export const inputShortcutHandler =
                 start + 2;
         }
     };
+
+
+export const hanbleDownload = (value:string)=>{
+    const file = new Blob([value], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(file);
+    a.download = 'text-editor-content.txt';
+    a.click();
+    URL.revokeObjectURL(a.href);
+}

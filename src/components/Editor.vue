@@ -16,7 +16,7 @@ const value = defineModel<string>({
 
 const classes = ref<string>(useLanguageClass(value.value));
 
-watch(value, (newValue) => {
+watch(value, (newValue: string) => {
     classes.value = useLanguageClass(newValue);
 });
 
@@ -51,11 +51,12 @@ const uiClass = computed(() => {
 });
 
 
-const placeholder = "Start writing...\n\nPress `cmd + o` to open file.\nPress `cmd + ,` to open settings dialog.\n\nYou can also drag and drop files here.\n\nPress `cmd + b` for bold, `cmd + i` for italic, `cmd + u` for underline, and `cmd + k` for link.";
+const placeholder = "Start writing...\n\nPress `cmd + o` to open file.\nPress `cmd + ,` to open settings dialog.\nPress `cmd + s` to save file as text.\n\nYou can also drag and drop files here.\n\nPress `cmd + b` for bold, `cmd + i` for italic, `cmd + u` for underline, and `cmd + k` for link.";
 </script>
 
 <template>
-    <Logo class="text-black dark:text-white size-12 md:size-16 m-2 md:m-4" v-if="settings.ui === 'box' && settings.showLogo" />
+    <Logo class="text-black dark:text-white size-12 md:size-16 m-2 md:m-4"
+        v-if="settings.ui === 'box' && settings.showLogo" />
     <textarea ref="inputRef" v-model="value" id="editor" autofocus
         class="editor bg-editor p-4 pb-7 text-base min-h-1/2 min-w-1/2 text-black dark:text-white outline-none resize-none font-mono placeholder:text-slate-400 dark:placeholder:text-slate-600"
         :class="cn(classes, uiClass)" :placeholder="placeholder" :style="{ fontSize: `${settings.fontSize}px` }" />

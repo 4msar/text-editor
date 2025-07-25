@@ -3,6 +3,7 @@ import Time from './Time.vue';
 import ThemeToggle from './ThemeToggle.vue';
 import GithubButtonVue from './GithubButton.vue';
 import SettingsButton from './SettingsButton.vue';
+import DownloadButton from './DownloadButton.vue';
 
 const { value } = defineProps<{
     value: string;
@@ -27,6 +28,7 @@ defineEmits<{
 
             <div class="flex flex-1 md:justify-end justify-between items-center gap-3">
                 <div class="flex items-center gap-2">
+                    <DownloadButton v-if="value" />
                     <SettingsButton @click="$emit('open-setting')" />
                     <ThemeToggle />
                     <GithubButtonVue />
