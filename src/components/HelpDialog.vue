@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { helpTexts, placeholderTexts } from '../lib/data';
+import { helpTexts } from '../lib/data';
 import { useKeyboardShortcut } from '../lib/use-keyboard-shortcut';
 
 const helpDialogOpen = ref(false);
