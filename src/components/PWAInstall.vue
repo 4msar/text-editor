@@ -67,7 +67,7 @@ const installPWA = async () => {
 
 <template>
     <button v-if="isInstallable && !isInstalled" @click="installPWA"
-        class="p-1 rounded hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors" title="Install App"
+        class="hidden md:block p-1 rounded hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors" title="Install App"
         aria-label="Install PWA">
 
         <svg xmlns="http://www.w3.org/2000/svg" class="size-3" viewBox="0 0 24 24">
@@ -77,7 +77,7 @@ const installPWA = async () => {
     </button>
 
     <!-- Show installed indicator when PWA is installed -->
-    <div v-else-if="isInstalled" class="p-1 rounded text-green-600 dark:text-green-400" title="App Installed"
+    <div v-else-if="isInstalled" class="hidden md:block p-1 rounded text-green-600 dark:text-green-400" title="App Installed"
         aria-label="PWA is installed">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
             class="size-3">

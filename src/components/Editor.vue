@@ -5,6 +5,7 @@ import { useStorage } from '@vueuse/core';
 import { cn, inputShortcutHandler } from '../lib/utils';
 import type { Settings } from '../type';
 import Logo from './Logo.vue';
+import { placeholderTexts } from '../lib/data';
 
 const inputRef = ref<HTMLTextAreaElement | null>(null);
 
@@ -51,7 +52,6 @@ const uiClass = computed(() => {
 });
 
 
-const placeholder = "Start writing...\n\nPress `cmd + o` to open file.\nPress `cmd + ,` to open settings dialog.\nPress `cmd + s` to save file as text.\n\nYou can also drag and drop files here.\n\nPress `cmd + b` for bold, `cmd + i` for italic, `cmd + u` for underline, and `cmd + k` for link.";
 </script>
 
 <template>
@@ -59,5 +59,5 @@ const placeholder = "Start writing...\n\nPress `cmd + o` to open file.\nPress `c
         v-if="settings.ui === 'box' && settings.showLogo" />
     <textarea ref="inputRef" v-model="value" id="editor" autofocus
         class="editor bg-editor p-4 pb-7 text-base min-h-1/2 min-w-1/2 text-black dark:text-white outline-none resize-none font-mono placeholder:text-slate-400 dark:placeholder:text-slate-600"
-        :class="cn(classes, uiClass)" :placeholder="placeholder" :style="{ fontSize: `${settings.fontSize}px` }" />
+        :class="cn(classes, uiClass)" :placeholder="placeholderTexts.join('\n')" :style="{ fontSize: `${settings.fontSize}px` }" />
 </template>

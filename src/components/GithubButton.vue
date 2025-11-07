@@ -1,5 +1,5 @@
 <template>
-    <a class="p-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 transition-colors"
+    <a class="hidden md:block p-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 transition-colors"
         href="https://github.com/4msar/text-editor" target="_blank" rel="noopener noreferrer">
         <svg fill="currentColor" class="size-3" aria-hidden="true" viewBox="0 0 24 24" version="1.1" data-view-component="true">
             <path

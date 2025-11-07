@@ -80,12 +80,12 @@ const handleThemeChange = (event: Event) => {
             </div>
             <div class="mt-4 flex justify-between items-end">
                 <button @click="$emit('close')"
-                    class="px-3 py-1.5 text-sm bg-blue-500 text-white rounded hover:bg-blue-600">
+                    class="px-2 md:px-3 py-1 md:py-1.5 text-sm bg-blue-500 text-white rounded hover:bg-blue-600">
                     Close
                 </button>
 
                 <a href="https://msar.me/contact" target="_blank" rel="noopener noreferrer"
-                    class="text-sm text-gray-500 hover:underline" title="Contact me">
+                    class="text-sm text-gray-700 dark:text-gray-100 hover:underline" title="Contact me">
                     <svg viewBox="0 0 64 64" fill="currentColor" class="size-3">
                         <path
                             d="M62.99 2.562a1.012 1.012 0 0 0-1.23-.84L7.403 15.207a1 1 0 0 0-.45 1.692l13.933 13.358-2.765 17.15c-.107.67.497 1.257 1.159 1.144l18.08-3.132 17.183 9.699a1 1 0 0 0 1.483-.738l6.964-51.554a.995.995 0 0 0-.002-.264zM9.646 16.71 56.891 4.99 22.255 28.797 9.646 16.71zm27.268 26.755L20.32 46.341l2.5-15.505L58.863 6.062 36.915 43.466zm17.328 9.184L38.92 44.001 60.343 7.492l-6.1 45.158zM14.444 51.61l-4.695 5.209a1 1 0 1 0 1.485 1.339l4.695-5.21a1 1 0 1 0-1.485-1.338zM5.948 29.056l-4.691 5.209a1 1 0 0 0 1.486 1.338l4.691-5.209a1 1 0 0 0-1.486-1.338zM40.816 55.433l-4.69 5.205a1 1 0 1 0 1.485 1.339l4.69-5.205a1 1 0 1 0-1.485-1.339z" />
