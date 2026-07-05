@@ -36,9 +36,6 @@ defineEmits<{
                     <SettingsButton @click="$emit('open-setting')" />
                     <ThemeToggle />
                     <GithubButtonVue />
-                </div>
-                <div class="flex items-center gap-2">
-                    <span class="hidden md:flex">Time:</span>
                     <Time />
                 </div>
             </div>
