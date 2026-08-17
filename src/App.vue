@@ -22,7 +22,7 @@ const settings = useStorage<Settings>('settings', {
   newNoteBehavior: 'open-last',
 });
 const notes = useStorage<NoteMeta[]>('text-editor-notes', []);
-const activeNoteInStorage = useStorage('text-editor-active-note', '');
+const activeNoteInStorage = useStorage('text-editor-active-note', '', sessionStorage);
 const noteCounter = useStorage('text-editor-note-counter', 0);
 const sidebarEnabled = computed(() => settings.value.newNoteBehavior === 'start-fresh');
 const MAX_NOTES = 50;
@@ -30,6 +30,7 @@ const LEGACY_NOTE_KEY = 'text-editor-content';
 
 const getNoteContent = (noteId: string) => localStorage.getItem(noteId) ?? '';
 const setNoteContent = (noteId: string, content: string) => localStorage.setItem(noteId, content);
+const isContentEmpty = (content: string) => content.trim().length === 0;
 
 const normalizeTitle = (content: string) => {
   const clean = content.replace(/\s+/g, ' ').trim();
@@ -53,6 +54,9 @@ const syncCounterWithExistingNotes = () => {
 };
 
 const upsertNoteMeta = (noteId: string, content: string, touch = true) => {
+  if (isContentEmpty(content)) {
+    return;
+  }
   const existing = notes.value.find((note) => note.id === noteId);
   const updatedAt = touch ? Date.now() : existing?.updatedAt ?? Date.now();
   const next = notes.value.filter((note) => note.id !== noteId);
@@ -68,28 +72,63 @@ const createNote = (content = '') => {
   syncCounterWithExistingNotes();
   noteCounter.value += 1;
   const noteId = `note_${noteCounter.value}`;
-  setNoteContent(noteId, content);
-  upsertNoteMeta(noteId, content, true);
+  if (!isContentEmpty(content)) {
+    setNoteContent(noteId, content);
+    upsertNoteMeta(noteId, content, true);
+  }
   return noteId;
 };
 
-const ensureAtLeastOneNote = () => {
-  if (notes.value.length === 0) {
-    const legacy = localStorage.getItem(LEGACY_NOTE_KEY) ?? '';
-    const firstNoteId = createNote(legacy);
-    if (localStorage.getItem(LEGACY_NOTE_KEY) !== null) {
-      localStorage.removeItem(LEGACY_NOTE_KEY);
+const clearActiveNote = () => {
+  activeNoteId.value = '';
+  activeNoteInStorage.value = '';
+  isLoadingNote.value = true;
+  value.value = '';
+  isLoadingNote.value = false;
+};
+
+const deleteNote = (noteId: string) => {
+  localStorage.removeItem(noteId);
+  notes.value = notes.value.filter((note) => note.id !== noteId);
+  if (activeNoteId.value === noteId) {
+    clearActiveNote();
+  }
+};
+
+const cleanupEmptySavedNotes = () => {
+  const next: NoteMeta[] = [];
+  notes.value.forEach((note) => {
+    const content = getNoteContent(note.id);
+    if (isContentEmpty(content)) {
+      localStorage.removeItem(note.id);
+      return;
     }
-    return firstNoteId;
+    next.push({
+      id: note.id,
+      title: normalizeTitle(content),
+      updatedAt: note.updatedAt,
+    });
+  });
+  notes.value = sortAndTrimNotes(next);
+};
+
+const saveOrDeleteCurrentNote = (content: string) => {
+  if (isContentEmpty(content)) {
+    if (activeNoteId.value) {
+      deleteNote(activeNoteId.value);
+    }
+    return;
   }
 
-  notes.value.forEach((note) => {
-    if (localStorage.getItem(note.id) === null) {
-      setNoteContent(note.id, '');
-    }
-  });
+  if (!activeNoteId.value) {
+    const newNoteId = createNote(content);
+    activeNoteId.value = newNoteId;
+    activeNoteInStorage.value = newNoteId;
+    return;
+  }
 
-  return notes.value[0]?.id ?? createNote('');
+  setNoteContent(activeNoteId.value, content);
+  upsertNoteMeta(activeNoteId.value, content, true);
 };
 
 const openNote = (noteId: string, persistAsLast = true) => {
@@ -107,22 +146,44 @@ const openNote = (noteId: string, persistAsLast = true) => {
 };
 
 const initializeNotes = () => {
+  cleanupEmptySavedNotes();
   syncCounterWithExistingNotes();
-  const fallbackNoteId = ensureAtLeastOneNote();
+
+  const legacy = localStorage.getItem(LEGACY_NOTE_KEY);
+  if (legacy !== null) {
+    if (!isContentEmpty(legacy)) {
+      createNote(legacy);
+    }
+    localStorage.removeItem(LEGACY_NOTE_KEY);
+  }
+
+  const fallbackNoteId = notes.value[0]?.id ?? '';
 
   if (settings.value.newNoteBehavior === 'start-fresh') {
-    const freshNoteId = createNote('');
-    openNote(freshNoteId);
+    clearActiveNote();
     return;
   }
 
   const hasActiveNote = notes.value.some((note) => note.id === activeNoteInStorage.value);
-  openNote(hasActiveNote ? activeNoteInStorage.value : fallbackNoteId);
+  const noteToOpen = hasActiveNote ? activeNoteInStorage.value : fallbackNoteId;
+  if (!noteToOpen) {
+    clearActiveNote();
+    return;
+  }
+  openNote(noteToOpen);
 };
 
 const handleOpenNote = (noteId: string) => {
   openNote(noteId);
   sidebarOpen.value = false;
+};
+
+const handleDeleteNote = (noteId: string) => {
+  const wasActive = activeNoteId.value === noteId;
+  deleteNote(noteId);
+  if (wasActive && notes.value[0]) {
+    openNote(notes.value[0].id);
+  }
 };
 
 watch(sidebarEnabled, (enabled) => {
@@ -134,14 +195,11 @@ watch(sidebarEnabled, (enabled) => {
 watch(
   value,
   (newValue, oldValue) => {
-    if (isLoadingNote.value || !activeNoteId.value || newValue === oldValue) {
+    if (isLoadingNote.value || newValue === oldValue) {
       return;
     }
-    setNoteContent(activeNoteId.value, newValue);
-    upsertNoteMeta(activeNoteId.value, newValue, true);
-  },
-  { flush: 'sync' }
-);
+    saveOrDeleteCurrentNote(newValue);
+  });
 
 // add event listener `cmd + o` or `ctrl + o` to open file
 useKeyboardShortcut(['cmd+o', 'ctrl+o'], () => {
@@ -216,7 +274,7 @@ onUnmounted(() => {
 <template>
   <main class="relative h-svh md:h-screen w-screen flex flex-col items-center justify-center">
     <RecentNotesSidebar :enabled="sidebarEnabled" :open="sidebarOpen" :notes="notes" :active-note-id="activeNoteId"
-      @toggle="sidebarOpen = !sidebarOpen" @open-note="handleOpenNote" />
+      @toggle="sidebarOpen = !sidebarOpen" @open-note="handleOpenNote" @delete-note="handleDeleteNote" />
     <Editor v-model="value" />
     <input ref="inputRef" type="file" id="fileInput" class="hidden" :accept="supportedFileType"
       @change="handleFileOpen" />
