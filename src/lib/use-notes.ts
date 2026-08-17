@@ -80,6 +80,19 @@ export const useNotes = (settings: ReturnType<typeof useStorage<Settings>>) => {
         isLoadingNote.value = false;
     };
 
+    const newNote = () => {
+        if (activeNoteId.value) {
+            const currentContent = value.value;
+            if (isContentEmpty(currentContent)) {
+                deleteNote(activeNoteId.value);
+            } else {
+                setNoteContent(activeNoteId.value, currentContent);
+                upsertNoteMeta(activeNoteId.value, currentContent, true);
+            }
+        }
+        clearActiveNote();
+    };
+
     const deleteNote = (noteId: string) => {
         localStorage.removeItem(noteId);
         notes.value = notes.value.filter((note) => note.id !== noteId);
@@ -177,6 +190,7 @@ export const useNotes = (settings: ReturnType<typeof useStorage<Settings>>) => {
         isLoadingNote,
         value,
         openNote,
+        newNote,
         deleteNote,
         clearActiveNote,
         initializeNotes,
