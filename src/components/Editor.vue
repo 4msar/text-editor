@@ -37,7 +37,8 @@ onUnmounted(() => {
 const settings = useStorage<Settings>("settings", {
     fontSize: "16",
     ui: "auto",
-    showLogo: true
+    showLogo: true,
+    newNoteBehavior: "open-last"
 });
 
 const uiClass = computed(() => {

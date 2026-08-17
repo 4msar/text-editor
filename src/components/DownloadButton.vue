@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { useStorage } from '@vueuse/core';
 import { hanbleDownload } from './../lib/utils';
 
-const value = useStorage('text-editor-content', '');
+const { value } = defineProps<{
+    value: string;
+}>();
 
 const download = () => {
-    if (value.value) {
-        hanbleDownload(value.value);
+    if (value) {
+        hanbleDownload(value);
     }
 }
 </script>
