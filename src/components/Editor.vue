@@ -9,6 +9,10 @@ import { placeholderTexts } from '../lib/data';
 
 const inputRef = ref<HTMLTextAreaElement | null>(null);
 
+const emit = defineEmits<{
+    (e: 'onFocus', value: string): void;
+}>();
+
 const value = defineModel<string>({
     default: '',
     type: String,
@@ -24,6 +28,10 @@ watch(value, (newValue: string) => {
 onMounted(() => {
     if (inputRef.value) {
         inputRef.value.addEventListener('keydown', inputShortcutHandler(inputRef));
+
+        inputRef.value.addEventListener('focus', () => {
+            emit('onFocus', value.value);
+        });
     }
 });
 
@@ -31,6 +39,10 @@ onMounted(() => {
 onUnmounted(() => {
     if (inputRef.value) {
         inputRef.value.removeEventListener('keydown', inputShortcutHandler(inputRef));
+
+        inputRef.value.removeEventListener('focus', () => {
+            emit('onFocus', value.value);
+        });
     }
 });
 
