@@ -1,3 +1,7 @@
+// Supported file type for opening files, all text files
+export const supportedFileType =
+    ".txt,.md,.json,.js,.ts,.html,.css,.vue,.xml,.yaml,.yml,.csv,.log,.py,.java,.cpp,.c,.h,.php,.rb,.go,.rs,.swift,.kt,.scala,.sh,.bat,.ps1,.sql,.r,.m,.pl,.lua,.dart,.jsx,.tsx,.scss,.sass,.less,.styl,.ini,.cfg,.conf,.env,.gitignore,.dockerfile,.makefile,.cmake,.toml,.lock,.properties,.gradle,.maven,.ant,.sbt,.clj,.cljs,.edn,.elm,.ex,.exs,.erl,.hrl,.fs,.fsx,.fsi,.ml,.mli,.hs,.lhs,.nim,.pas,.pp,.dpr,.asm,.s,.f,.f90,.f95,.f03,.f08,.for,.ftn,.cob,.cbl,.ada,.adb,.ads,.tcl,.vb,.vbs,.wsf,.wsh,.au3,.ahk,.nsi,.nsh,.iss,.tex,.bib,.cls,.sty,.dtx,.ins,.lof,.lot,.toc,.aux,.idx,.ind,.ilg,.glo,.gls,.fdb_latexmk,.fls,.synctex.gz,.bbl,.blg,.run.xml,.bcf,.xdv";
+
 // Types for language names used in detection and styling
 export type LanguageName =
     | "javascript"
@@ -144,6 +148,7 @@ export function detectLanguage(code: string): LanguageName | undefined {
 
 // Utility: get Tailwind CSS classes for a detected language
 export function getLanguageClass(language: LanguageName): string {
-    return `${languageColorClasses[language] || languageColorClasses.plaintext
-        } ${language}`;
+    return `${
+        languageColorClasses[language] || languageColorClasses.plaintext
+    } ${language}`;
 }
