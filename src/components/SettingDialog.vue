@@ -17,7 +17,8 @@ import type { Settings } from '../type';
 const settings = useStorage<Settings>("settings", {
     fontSize: "16",
     ui: "auto",
-    showLogo: true
+    showLogo: true,
+    newNoteBehavior: "open-last"
 });
 
 
@@ -67,6 +68,15 @@ const handleThemeChange = (event: Event) => {
                         </div>
                         <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Show</span>
                     </label>
+                </fieldset>
+                <fieldset>
+                    <legend class="text-lg font-medium">New Note</legend>
+                    <p class="text-sm">Choose what happens when opening a new tab/window:</p>
+                    <select v-model="settings.newNoteBehavior"
+                        class="w-full p-2 border border-gray-300 dark:border-gray-700 rounded bg-white dark:bg-gray-800 text-black dark:text-white">
+                        <option value="open-last">Open last text</option>
+                        <option value="start-fresh">Start fresh note</option>
+                    </select>
                 </fieldset>
                 <fieldset>
                     <legend class="text-lg font-medium">Font Size</legend>

@@ -32,7 +32,7 @@ defineEmits<{
                 <div class="flex items-center gap-2">
                     <PWAInstall />
                     <HelpDialog />
-                    <DownloadButton v-if="value" />
+                    <DownloadButton v-if="value" :value="value" />
                     <SettingsButton @click="$emit('open-setting')" />
                     <ThemeToggle />
                     <GithubButtonVue />
