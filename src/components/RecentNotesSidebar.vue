@@ -12,6 +12,7 @@ const { notes, activeNoteId, enabled, open } = defineProps<{
 
 defineEmits<{
     (e: 'toggle'): void;
+    (e: 'new-note'): void;
     (e: 'open-note', id: string): void;
     (e: 'delete-note', id: string): void;
 }>();
@@ -40,7 +41,16 @@ const displayTitle = (title: string) => {
         <aside class="fixed z-30 left-0 top-0 h-full w-64 bg-white dark:bg-slate-900 border-r border-slate-300 dark:border-slate-700 transition-transform duration-200"
             :class="open ? 'translate-x-0' : '-translate-x-full'">
             <div class="h-full pt-4 pb-8 px-3 overflow-y-auto">
-                <h2 class="text-sm font-semibold text-slate-800 dark:text-slate-100 mb-3">Recent notes</h2>
+                <div class="mb-3 flex items-center justify-between gap-2">
+                    <h2 class="text-sm font-semibold text-slate-800 dark:text-slate-100">Recent notes</h2>
+                    <button type="button" @click="$emit('new-note')"
+                        class="inline-flex items-center gap-1 rounded-md border border-slate-300 bg-slate-50 px-2 py-1 text-[11px] font-medium text-slate-700 transition-colors hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3">
+                            <path d="M12 5v14M5 12h14" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        New note
+                    </button>
+                </div>
                 <ul v-if="recentNotes.length > 0" class="space-y-2">
                     <li v-for="note in recentNotes" :key="note.id">
                         <div class="w-full rounded-md border px-2 py-1.5 transition-colors"
