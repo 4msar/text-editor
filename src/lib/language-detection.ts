@@ -25,6 +25,7 @@ export type LanguageName =
     | "json"
     | "markdown"
     | "sql"
+    | "bash"
     | "plaintext"; // Default for unrecognized languages
 
 // Tailwind CSS color mapping for each language (light + dark in one string)
@@ -50,6 +51,7 @@ export const languageColorClasses: Record<LanguageName, string> = {
     json: "text-gray-700 dark:text-gray-300",
     markdown: "text-gray-600 dark:text-gray-400",
     sql: "text-indigo-600 dark:text-indigo-400",
+    bash: "text-green-700 dark:text-green-400",
     plaintext: "text-slate-900 dark:text-slate-200", // Default for unrecognized languages
 };
 
@@ -139,6 +141,23 @@ export const languages: { name: LanguageName; match: RegExp }[] = [
         name: "shell",
         match: /```(sh|shell|bash|zsh)/i,
     },
+    // shebang for other languages
+    {
+        name: "python",
+        match: /^#!.*\bpython[23]?\b/m,
+    },
+    {
+        name: "ruby",
+        match: /^#!.*\bruby\b/m,
+    },
+    {
+        name: "bash",
+        match: /^#!.*\b(bash|sh|zsh)\b/m,
+    },
+    {
+        name: "php",
+        match: /^#!.*\bphp\b/m,
+    },
 ];
 
 // Utility: detect language from code snippet
@@ -148,7 +167,5 @@ export function detectLanguage(code: string): LanguageName | undefined {
 
 // Utility: get Tailwind CSS classes for a detected language
 export function getLanguageClass(language: LanguageName): string {
-    return `${
-        languageColorClasses[language] || languageColorClasses.plaintext
-    } ${language}`;
+    return `${languageColorClasses[language] || languageColorClasses.plaintext} ${language}`;
 }
