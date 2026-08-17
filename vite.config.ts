@@ -9,13 +9,8 @@ export default defineConfig({
         vue(),
         tailwindcss(),
         VitePWA({
-            registerType: "autoUpdate",
-            includeAssets: [
-                "icon.svg",
-                "dark.png",
-                "light.png",
-                "browserconfig.xml",
-            ],
+            registerType: "prompt",
+            includeAssets: ["icon.svg", "dark.png", "light.png", "browserconfig.xml"],
             manifest: {
                 name: "Editor - Simple Web Text Editor",
                 short_name: "Editor",
@@ -85,7 +80,7 @@ export default defineConfig({
                 ],
             },
             devOptions: {
-                enabled: true,
+                enabled: false,
             },
         }),
     ],
