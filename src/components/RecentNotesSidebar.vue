@@ -68,25 +68,33 @@ const spring = { type: "spring", stiffness: 380, damping: 36 } as const;
 
 <template>
     <AnimatePresence :initial="false">
-    <motion.button
-        v-if="!pinned"
-        key="tab"
-        type="button"
-        :title="`Notes (${altKey}+L)`"
-        aria-label="Toggle notes list"
-        :aria-expanded="open"
-        class="fixed top-1/2 left-0 z-40 -translate-y-1/2 rounded-r-lg border border-l-0 border-slate-300 bg-white/90 px-1 py-3 text-slate-600 shadow-sm backdrop-blur transition-colors hover:text-slate-900 dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-300 dark:hover:text-white"
-        :initial="{ opacity: 0, x: 288 }"
-        :animate="{ opacity: 1, x: open ? 288 : 0 }"
-        :exit="{ opacity: 0, x: 288 }"
-        :whileHover="{ paddingRight: 8 }"
-        :transition="spring"
-        @click="emit('toggle')"
-    >
-        <motion.svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" :animate="{ rotate: open ? 180 : 0 }" :transition="spring">
-            <path d="m9 18 6-6-6-6" stroke-linecap="round" stroke-linejoin="round" />
-        </motion.svg>
-    </motion.button>
+        <motion.button
+            v-if="!pinned"
+            key="tab"
+            type="button"
+            :title="`Notes (${altKey}+L)`"
+            aria-label="Toggle notes list"
+            :aria-expanded="open"
+            class="fixed top-1/2 left-0 z-40 -translate-y-1/2 rounded-r-lg border border-l-0 border-slate-300 bg-white/90 px-1 py-3 text-slate-600 shadow-sm backdrop-blur transition-colors hover:text-slate-900 dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-300 dark:hover:text-white"
+            :initial="{ opacity: 0, x: 288 }"
+            :animate="{ opacity: 1, x: open ? 288 : 0 }"
+            :exit="{ opacity: 0, x: 288 }"
+            :whileHover="{ paddingRight: 8 }"
+            :transition="spring"
+            @click="emit('toggle')"
+        >
+            <motion.svg
+                class="size-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                :animate="{ rotate: open ? 180 : 0 }"
+                :transition="spring"
+            >
+                <path d="m9 18 6-6-6-6" stroke-linecap="round" stroke-linejoin="round" />
+            </motion.svg>
+        </motion.button>
     </AnimatePresence>
 
     <AnimatePresence>
@@ -124,56 +132,62 @@ const spring = { type: "spring", stiffness: 380, damping: 36 } as const;
                     </motion.span>
                 </h2>
                 <div class="flex items-center gap-1">
-                <motion.button
-                    type="button"
-                    :title="pinned ? 'Unpin sidebar' : 'Pin sidebar open'"
-                    :aria-label="pinned ? 'Unpin sidebar' : 'Pin sidebar open'"
-                    :aria-pressed="pinned"
-                    :whileHover="{ scale: 1.1 }"
-                    :whilePress="{ scale: 0.88 }"
-                    class="hidden size-6 items-center justify-center rounded-md transition-colors md:inline-flex"
-                    :class="
-                        pinned
-                            ? 'bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300'
-                            : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
-                    "
-                    @click="emit('toggle-pin')"
-                >
-                    <motion.svg
-                        class="size-3.5"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        :animate="{ rotate: pinned ? 0 : 45 }"
-                        :transition="spring"
+                    <motion.button
+                        type="button"
+                        :title="pinned ? 'Unpin sidebar' : 'Pin sidebar open'"
+                        :aria-label="pinned ? 'Unpin sidebar' : 'Pin sidebar open'"
+                        :aria-pressed="pinned"
+                        :whileHover="{ scale: 1.1 }"
+                        :whilePress="{ scale: 0.88 }"
+                        class="hidden size-6 items-center justify-center rounded-md transition-colors md:inline-flex"
+                        :class="
+                            pinned
+                                ? 'bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300'
+                                : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
+                        "
+                        @click="emit('toggle-pin')"
                     >
-                        <path d="M12 17v5" />
-                        <path
-                            :fill="pinned ? 'currentColor' : 'none'"
-                            d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"
-                        />
-                    </motion.svg>
-                </motion.button>
-                <motion.button
-                    type="button"
-                    :title="`New note (${altKey}+N)`"
-                    :whileHover="{ scale: 1.04 }"
-                    :whilePress="{ scale: 0.95 }"
-                    class="inline-flex items-center gap-1 rounded-md bg-blue-600 px-2 py-1 text-[11px] font-medium text-white shadow-sm hover:bg-blue-700"
-                    @click="emit('new-note')"
-                >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="size-3">
-                        <path d="M12 5v14M5 12h14" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                    New
-                </motion.button>
+                        <motion.svg
+                            class="size-3.5"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            :animate="{ rotate: pinned ? 0 : 45 }"
+                            :transition="spring"
+                        >
+                            <path d="M12 17v5" />
+                            <path
+                                :fill="pinned ? 'currentColor' : 'none'"
+                                d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"
+                            />
+                        </motion.svg>
+                    </motion.button>
+                    <motion.button
+                        type="button"
+                        :title="`New note (${altKey}+N)`"
+                        :whileHover="{ scale: 1.04 }"
+                        :whilePress="{ scale: 0.95 }"
+                        class="inline-flex items-center gap-1 rounded-md bg-blue-600 px-2 py-1 text-[11px] font-medium text-white shadow-sm hover:bg-blue-700"
+                        @click="emit('new-note')"
+                    >
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="size-3">
+                            <path d="M12 5v14M5 12h14" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        New
+                    </motion.button>
                 </div>
             </div>
             <label class="relative block">
-                <svg class="pointer-events-none absolute top-1/2 left-2 size-3.5 -translate-y-1/2 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg
+                    class="pointer-events-none absolute top-1/2 left-2 size-3.5 -translate-y-1/2 text-slate-400"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                >
                     <circle cx="11" cy="11" r="7" />
                     <path d="m20 20-3.5-3.5" stroke-linecap="round" />
                 </svg>
@@ -189,7 +203,7 @@ const spring = { type: "spring", stiffness: 380, damping: 36 } as const;
         </div>
 
         <div class="flex-1 overflow-x-hidden overflow-y-auto px-3 pb-10">
-            <ul class="space-y-1.5">
+            <ul class="space-y-1.5 mt-1">
                 <AnimatePresence :initial="false">
                     <motion.li
                         v-for="(note, index) in filteredNotes"
@@ -207,7 +221,14 @@ const spring = { type: "spring", stiffness: 380, damping: 36 } as const;
                             class="absolute inset-0 rounded-lg bg-blue-50 ring-1 ring-blue-300 dark:bg-blue-950/50 dark:ring-blue-800"
                             :transition="spring"
                         />
-                        <div class="relative flex items-start gap-1 rounded-lg px-2 py-1.5 transition-colors" :class="note.id === activeNoteId ? 'text-blue-700 dark:text-blue-200' : 'text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800'">
+                        <div
+                            class="relative flex items-start gap-1 rounded-lg px-2 py-1.5 transition-colors"
+                            :class="
+                                note.id === activeNoteId
+                                    ? 'text-blue-700 dark:text-blue-200'
+                                    : 'text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800'
+                            "
+                        >
                             <button type="button" class="min-w-0 flex-1 text-left" @click="emit('open-note', note.id)">
                                 <p class="truncate text-xs font-medium">{{ note.title || "Untitled note" }}</p>
                                 <p class="text-[10px] opacity-70">{{ relative(note.updatedAt) }}</p>
@@ -221,7 +242,13 @@ const spring = { type: "spring", stiffness: 380, damping: 36 } as const;
                                 class="shrink-0 rounded p-1 text-slate-400 opacity-100 transition-opacity hover:bg-rose-100 hover:text-rose-600 md:opacity-0 md:group-hover:opacity-100 md:focus-visible:opacity-100 dark:hover:bg-rose-950/60 dark:hover:text-rose-300"
                                 @click.stop="emit('delete-note', note.id)"
                             >
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="size-3" stroke-width="2">
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    class="size-3"
+                                    stroke-width="2"
+                                >
                                     <path d="M3 6h18" stroke-linecap="round" />
                                     <path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2" />
                                     <path d="M19 6l-1 14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1L5 6" />
