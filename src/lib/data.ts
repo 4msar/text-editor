@@ -1,25 +1,35 @@
-export const keyboardShortcuts = [
-    "Press `cmd + o` to open file.",
-    "Press `cmd + s` to save file as text.",
-    "Press `cmd + ,` to open settings dialog.",
-    "Press `cmd + /` to open help dialog.",
-    "Press `cmd + b` for bold.",
-    "Press `cmd + i` for italic.",
-    "Press `cmd + u` for underline.",
-    "Press `cmd + k` for link.",
-    "Press `cmd + shift + l` for convert text to lowercase.",
-    "Press `cmd + shift + l` for convert text to uppercase.",
-]
+export const isMac =
+    typeof navigator !== "undefined" && /Mac|iPhone|iPad|iPod/i.test(navigator.platform || navigator.userAgent);
+
+export const modKey = isMac ? "⌘" : "Ctrl";
+export const altKey = isMac ? "⌥" : "Alt";
+export const shiftKey = isMac ? "⇧" : "Shift";
+
+export type ShortcutInfo = { keys: string[]; label: string; group: "General" | "Notes" | "Formatting" };
+
+export const shortcuts: ShortcutInfo[] = [
+    { keys: [modKey, "O"], label: "Open file", group: "General" },
+    { keys: [modKey, "S"], label: "Download note", group: "General" },
+    { keys: [modKey, ","], label: "Settings", group: "General" },
+    { keys: [modKey, "/"], label: "Help", group: "General" },
+    { keys: ["Esc"], label: "Close dialog / panel", group: "General" },
+    { keys: [altKey, "N"], label: "New note", group: "Notes" },
+    { keys: [altKey, "L"], label: "Toggle notes list", group: "Notes" },
+    { keys: [modKey, "B"], label: "Bold", group: "Formatting" },
+    { keys: [modKey, "I"], label: "Italic", group: "Formatting" },
+    { keys: [modKey, "U"], label: "Underline", group: "Formatting" },
+    { keys: [modKey, "K"], label: "Link", group: "Formatting" },
+    { keys: [modKey, shiftKey, "L"], label: "Lowercase selection", group: "Formatting" },
+    { keys: [modKey, shiftKey, "U"], label: "Uppercase selection", group: "Formatting" },
+    { keys: ["Tab"], label: "Indent", group: "Formatting" },
+    { keys: [shiftKey, "Tab"], label: "Outdent", group: "Formatting" },
+];
+
+const fmt = (s: ShortcutInfo) => `${s.keys.join(" + ")}  ${s.label}`;
 
 export const placeholderTexts = [
     "Start writing...\n",
-    ...keyboardShortcuts.slice(0,3),
-    "You can also drag and drop files here.\n",
-]
-
-export const helpTexts = [
-    "Keyboard Shortcuts:\n",
-    ...keyboardShortcuts,
-    "\n",
-    "This app also supports PWA installation. You can install it on your device and use it offline.",
-]
+    ...shortcuts.slice(0, 3).map(fmt),
+    fmt(shortcuts[5]),
+    "\nYou can also drag and drop files here.",
+];

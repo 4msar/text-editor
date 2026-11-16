@@ -1,76 +1,100 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
-import { useLanguageClass } from '../lib/use-language-class';
-import { useStorage } from '@vueuse/core';
-import { cn, inputShortcutHandler } from '../lib/utils';
-import type { Settings } from '../type';
-import Logo from './Logo.vue';
-import { placeholderTexts } from '../lib/data';
+import { computed, ref, watch } from "vue";
+import { AnimatePresence, motion, useAnimate } from "motion-v";
+import { detectLanguage, getLanguageClass } from "../lib/language-detection";
+import { handleEditorKeydown } from "../lib/editor-commands";
+import { useSettings } from "../lib/use-settings";
+import { cn } from "../lib/utils";
+import { placeholderTexts } from "../lib/data";
+import Logo from "./Logo.vue";
 
-const inputRef = ref<HTMLTextAreaElement | null>(null);
+export type CursorInfo = { line: number; column: number; selected: number };
+
+const props = defineProps<{ switchKey: number }>();
 
 const emit = defineEmits<{
-    (e: 'onFocus', value: string): void;
+    (e: "onFocus"): void;
+    (e: "cursor", value: CursorInfo): void;
 }>();
 
-const value = defineModel<string>({
-    default: '',
-    type: String,
-    required: true
-});
+const value = defineModel<string>({ default: "", required: true });
 
-const classes = ref<string>(useLanguageClass(value.value));
+const inputRef = ref<HTMLTextAreaElement | null>(null);
+const settings = useSettings();
+const [scope, animate] = useAnimate();
 
-watch(value, (newValue: string) => {
-    classes.value = useLanguageClass(newValue);
-});
+const languageClass = computed(() => getLanguageClass(detectLanguage(value.value) ?? "plaintext"));
+const isBox = computed(() => settings.value.ui === "box");
 
-onMounted(() => {
-    if (inputRef.value) {
-        inputRef.value.addEventListener('keydown', inputShortcutHandler(inputRef));
+const emitCursor = () => {
+    const el = inputRef.value;
+    if (!el) return;
+    const before = el.value.slice(0, el.selectionStart);
+    const line = before.split("\n").length;
+    const column = el.selectionStart - before.lastIndexOf("\n");
+    emit("cursor", { line, column, selected: Math.abs(el.selectionEnd - el.selectionStart) });
+};
 
-        inputRef.value.addEventListener('focus', () => {
-            emit('onFocus', value.value);
-        });
-    }
-});
+// Subtle cross-fade when switching between notes.
+watch(
+    () => props.switchKey,
+    () => {
+        if (!scope.value) return;
+        animate(scope.value, { opacity: [0.35, 1], y: [6, 0] }, { duration: 0.25, ease: "easeOut" });
+        inputRef.value?.setSelectionRange(0, 0);
+        inputRef.value?.scrollTo({ top: 0 });
+        emitCursor();
+    },
+    { flush: "post" },
+);
 
-// Clean up event listener on unmount
-onUnmounted(() => {
-    if (inputRef.value) {
-        inputRef.value.removeEventListener('keydown', inputShortcutHandler(inputRef));
-
-        inputRef.value.removeEventListener('focus', () => {
-            emit('onFocus', value.value);
-        });
-    }
-});
-
-const settings = useStorage<Settings>("settings", {
-    fontSize: "16",
-    ui: "auto",
-    showLogo: true,
-    newNoteBehavior: "open-last"
-});
-
-const uiClass = computed(() => {
-    if (settings.value.ui === "box") {
-        return "w-full md:w-2/3 mx-auto shadow-md aspect-16/9 h-full md:h-2/3 border border-slate-300 dark:border-slate-700 rounded-md";
-    }
-    if (settings.value.ui === "fluid") {
-        return "w-full h-full border-none";
-    }
-
-    return "w-full h-full border-none";
-});
-
-
+defineExpose({ focus: () => inputRef.value?.focus() });
 </script>
 
 <template>
-    <Logo class="text-black dark:text-white size-12 md:size-16 m-2 md:m-4"
-        v-if="settings.ui === 'box' && settings.showLogo" />
-    <textarea ref="inputRef" v-model="value" id="editor" autofocus
-        class="editor bg-editor p-4 pb-7 text-base min-h-1/2 min-w-1/2 text-black dark:text-white outline-none resize-none font-mono placeholder:text-slate-400 dark:placeholder:text-slate-600"
-        :class="cn(classes, uiClass)" :placeholder="placeholderTexts.join('\n')" :style="{ fontSize: `${settings.fontSize}px` }" />
+    <AnimatePresence>
+        <motion.div
+            v-if="isBox && settings.showLogo"
+            key="logo"
+            :initial="{ opacity: 0, y: -12, scale: 0.8 }"
+            :animate="{ opacity: 1, y: 0, scale: 1 }"
+            :exit="{ opacity: 0, y: -12, scale: 0.8 }"
+            :whileHover="{ rotate: -8, scale: 1.05 }"
+            :transition="{ type: 'spring', stiffness: 300, damping: 20 }"
+        >
+            <Logo class="m-2 size-12 text-black md:m-4 md:size-16 dark:text-white" />
+        </motion.div>
+    </AnimatePresence>
+    <motion.div
+        :key="settings.ui"
+        :class="
+            isBox
+                ? 'aspect-16/9 h-full min-h-1/2 w-full overflow-hidden rounded-xl border border-slate-300 shadow-xl ring-1 shadow-slate-900/5 ring-slate-900/5 md:mx-auto md:h-2/3 md:w-2/3 dark:border-slate-700 dark:shadow-black/40 dark:ring-white/5'
+                : 'size-full'
+        "
+        :initial="{ opacity: 0, scale: isBox ? 0.97 : 1, y: isBox ? 12 : 0 }"
+        :animate="{ opacity: 1, scale: 1, y: 0 }"
+        :transition="{ type: 'spring', stiffness: 260, damping: 28 }"
+    >
+        <div ref="scope" class="size-full">
+            <textarea
+                id="editor"
+                ref="inputRef"
+                v-model="value"
+                autofocus
+                spellcheck="true"
+                aria-label="Editor"
+                class="editor bg-editor size-full resize-none p-4 pb-9 font-mono text-base text-black caret-blue-600 outline-none selection:bg-blue-500/25 placeholder:text-slate-400 dark:text-white dark:caret-blue-400 dark:placeholder:text-slate-600"
+                :class="cn(languageClass)"
+                :placeholder="placeholderTexts.join('\n')"
+                :style="{ fontSize: `${settings.fontSize}px`, tabSize: 4 }"
+                @keydown="handleEditorKeydown"
+                @focus="emit('onFocus')"
+                @keyup="emitCursor"
+                @click="emitCursor"
+                @select="emitCursor"
+                @input="emitCursor"
+            />
+        </div>
+    </motion.div>
 </template>

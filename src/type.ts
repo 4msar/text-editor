@@ -3,6 +3,7 @@ export type Settings = {
     ui: "fluid" | "box" | "auto";
     showLogo: boolean;
     newNoteBehavior: "open-last" | "start-fresh";
+    sidebarPinned: boolean;
 };
 
 export type NoteMeta = {

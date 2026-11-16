@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import { motion } from 'motion-v';
+import { toast } from '../lib/use-toast';
 
 const deferredPrompt = ref<Event | null>(null);
 const isInstallable = ref(false);
@@ -55,9 +57,7 @@ const installPWA = async () => {
         (deferredPrompt.value as any).prompt();
         const { outcome } = await (deferredPrompt.value as any).userChoice;
         if (outcome === 'accepted') {
-            console.log('User accepted the install prompt');
-        } else {
-            console.log('User dismissed the install prompt');
+            toast.success('Installing app…');
         }
         deferredPrompt.value = null;
         isInstallable.value = false;
@@ -66,18 +66,18 @@ const installPWA = async () => {
 </script>
 
 <template>
-    <button v-if="isInstallable && !isInstalled" @click="installPWA"
-        class="hidden md:block p-1 rounded hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors" title="Install App"
-        aria-label="Install PWA">
+    <motion.button v-if="isInstallable && !isInstalled" @click="installPWA"
+        class="hidden md:inline-flex size-5 items-center justify-center rounded-md text-blue-600 dark:text-blue-400 hover:bg-slate-300/60 dark:hover:bg-slate-700 transition-colors" title="Install App"
+        aria-label="Install PWA" :initial="{ scale: 0 }" :animate="{ scale: 1 }" :whileHover="{ scale: 1.12 }" :whilePress="{ scale: 0.88 }">
 
         <svg xmlns="http://www.w3.org/2000/svg" class="size-3" viewBox="0 0 24 24">
             <path fill="currentColor"
                 d="M8 21v-2H2V3h10v2H4v12h16v-3h2v5h-6v2H8Zm9-7l-5-5l1.4-1.4l2.6 2.575V3h2v7.175L20.6 7.6L22 9l-5 5Z" />
         </svg>
-    </button>
+    </motion.button>
 
     <!-- Show installed indicator when PWA is installed -->
-    <div v-else-if="isInstalled" class="hidden md:block p-1 rounded text-green-600 dark:text-green-400" title="App Installed"
+    <div v-else-if="isInstalled" class="hidden md:inline-flex size-5 items-center justify-center rounded text-green-600 dark:text-green-400" title="App Installed"
         aria-label="PWA is installed">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
             class="size-3">

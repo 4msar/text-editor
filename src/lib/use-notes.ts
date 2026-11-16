@@ -1,5 +1,6 @@
 import { useStorage } from "@vueuse/core";
 import { ref } from "vue";
+import { toast } from "./use-toast";
 import type { NoteMeta, Settings } from "../type";
 
 const LEGACY_NOTE_KEY = "text-editor-content";
@@ -19,8 +20,18 @@ export const useNotes = (settings: ReturnType<typeof useStorage<Settings>>) => {
 
     const getNoteContent = (noteId: string) =>
         localStorage.getItem(noteId) ?? "";
-    const setNoteContent = (noteId: string, content: string) =>
-        localStorage.setItem(noteId, content);
+    let quotaWarned = false;
+    const setNoteContent = (noteId: string, content: string) => {
+        try {
+            localStorage.setItem(noteId, content);
+            quotaWarned = false;
+        } catch {
+            if (!quotaWarned) {
+                quotaWarned = true;
+                toast.error("Storage is full — this note can't be saved. Download it or delete old notes.");
+            }
+        }
+    };
     const isContentEmpty = (content: string) => content.trim().length === 0;
 
     const normalizeTitle = (content: string) => {
@@ -99,6 +110,15 @@ export const useNotes = (settings: ReturnType<typeof useStorage<Settings>>) => {
         if (activeNoteId.value === noteId) {
             clearActiveNote();
         }
+    };
+
+    /** Re-create a deleted note (used by the "Undo" toast). */
+    const restoreNote = (meta: NoteMeta, content: string) => {
+        setNoteContent(meta.id, content);
+        notes.value = sortAndTrimNotes([
+            ...notes.value.filter((note) => note.id !== meta.id),
+            meta,
+        ]);
     };
 
     const cleanupEmptySavedNotes = () => {
@@ -196,5 +216,7 @@ export const useNotes = (settings: ReturnType<typeof useStorage<Settings>>) => {
         initializeNotes,
         saveOrDeleteCurrentNote,
         createNote,
+        restoreNote,
+        getNoteContent,
     };
 };
