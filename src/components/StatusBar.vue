@@ -3,7 +3,6 @@ import { computed } from "vue";
 import { AnimatePresence, motion } from "motion-v";
 import Time from "./Time.vue";
 import ThemeToggle from "./ThemeToggle.vue";
-import GithubButton from "./GithubButton.vue";
 import PWAInstall from "./PWAInstall.vue";
 import IconButton from "./ui/IconButton.vue";
 import { modKey } from "../lib/data";
