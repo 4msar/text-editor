@@ -12,6 +12,7 @@ import type { CursorInfo } from "./Editor.vue";
 
 const props = defineProps<{
     value: string;
+    fileName?: string;
     cursor: CursorInfo;
     saved: boolean;
 }>();
@@ -42,6 +43,13 @@ const language = computed(() => detectLanguage(props.value));
             class="flex w-full items-center justify-between gap-2 border-t border-slate-300 bg-slate-200/90 px-2 py-1 text-xs text-slate-700 backdrop-blur dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-300"
         >
             <div class="flex min-w-0 items-center gap-3 tabular-nums">
+                <span
+                    v-if="fileName"
+                    class="hidden max-w-48 truncate rounded bg-blue-500/15 px-1.5 text-blue-700 sm:inline dark:text-blue-300"
+                    :title="`Opened from ${fileName}`"
+                >
+                    {{ fileName }}
+                </span>
                 <span class="hidden md:inline">Ln {{ cursor.line }}, Col {{ cursor.column }}</span>
                 <AnimatePresence>
                     <motion.span

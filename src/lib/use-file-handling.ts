@@ -1,9 +1,10 @@
 import { ref } from "vue";
 import { toast } from "./use-toast";
+import type { FileMeta } from "../type";
 
 const MAX_FILE_BYTES = 4 * 1024 * 1024;
 
-export const useFileHandling = (onLoad: (content: string, fileName: string) => void) => {
+export const useFileHandling = (onLoad: (content: string, file: FileMeta) => void) => {
     const isDragging = ref(false);
     let dragDepth = 0;
 
@@ -22,7 +23,7 @@ export const useFileHandling = (onLoad: (content: string, fileName: string) => v
                 toast.error(`"${file.name}" doesn't look like a text file.`);
                 return;
             }
-            onLoad(content, file.name);
+            onLoad(content, { name: file.name, type: file.type, lastModified: file.lastModified });
             toast.success(`Opened ${file.name}`);
         };
         reader.onerror = () => toast.error(`Couldn't read "${file.name}".`);

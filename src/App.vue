@@ -62,6 +62,8 @@ const {
     activeNoteId,
     isLoadingNote,
     value,
+    activeFile,
+    newNoteFromFile,
     openNote,
     newNote,
     deleteNote,
@@ -75,9 +77,8 @@ const focusEditor = () => nextTick(() => editorRef.value?.focus());
 const markSwitch = () => switchKey.value++;
 
 // File Handling: every opened/dropped file becomes its own note instead of overwriting the current one.
-const { isDragging, handleFileOpen, attachEventListeners, detachEventListeners } = useFileHandling((content) => {
-    newNote();
-    value.value = content;
+const { isDragging, handleFileOpen, attachEventListeners, detachEventListeners } = useFileHandling((content, file) => {
+    newNoteFromFile(content, file);
     markSwitch();
     sidebarOpen.value = false;
     focusEditor();
@@ -129,7 +130,10 @@ const download = () => {
         toast("Nothing to download yet");
         return;
     }
-    const name = handleDownload(value.value);
+    // Files keep their original name, extension and MIME type when saved back.
+    const name = activeFile.value
+        ? handleDownload(value.value, activeFile.value.name, activeFile.value.type)
+        : handleDownload(value.value);
     toast.success(`Downloaded ${name}`);
 };
 
@@ -212,6 +216,7 @@ onUnmounted(() => {
             <input ref="inputRef" id="fileInput" type="file" class="hidden" :accept="supportedFileType" @change="handleFileOpen" />
             <StatusBar
                 :value="value"
+                :file-name="activeFile?.name"
                 :cursor="cursor"
                 :saved="saved"
                 @open-setting="settingDialogOpen = true"

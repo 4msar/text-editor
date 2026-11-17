@@ -35,8 +35,8 @@ export const fileNameFromContent = (content: string) => {
     return `${slug || "note"}.${isMarkdown ? "md" : "txt"}`;
 };
 
-export const handleDownload = (value: string, fileName = fileNameFromContent(value)) => {
-    const file = new Blob([value], { type: "text/plain;charset=utf-8" });
+export const handleDownload = (value: string, fileName = fileNameFromContent(value), mimeType = "") => {
+    const file = new Blob([value], { type: mimeType || "text/plain;charset=utf-8" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(file);
     a.download = fileName;

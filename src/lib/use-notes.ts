@@ -1,7 +1,7 @@
 import { useStorage } from "@vueuse/core";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { toast } from "./use-toast";
-import type { NoteMeta, Settings } from "../type";
+import type { FileMeta, NoteMeta, Settings } from "../type";
 
 const LEGACY_NOTE_KEY = "text-editor-content";
 const MAX_NOTES = 50;
@@ -17,6 +17,8 @@ export const useNotes = (settings: ReturnType<typeof useStorage<Settings>>) => {
     const noteCounter = useStorage("text-editor-note-counter", 0);
     const isLoadingNote = ref(false);
     const value = ref("");
+    // File details for a note that hasn't been saved yet (e.g. an empty file was just opened).
+    const pendingFile = ref<FileMeta | null>(null);
 
     const getNoteContent = (noteId: string) =>
         localStorage.getItem(noteId) ?? "";
@@ -38,6 +40,8 @@ export const useNotes = (settings: ReturnType<typeof useStorage<Settings>>) => {
         const clean = content.replace(/\s+/g, " ").trim();
         return (clean || "Untitled note").slice(0, 50);
     };
+    // Notes opened from a file keep the file name as their title.
+    const titleFor = (content: string, file?: FileMeta) => file?.name ?? normalizeTitle(content);
 
     const sortAndTrimNotes = (list: NoteMeta[]) =>
         list.sort((a, b) => b.updatedAt - a.updatedAt).slice(0, MAX_NOTES);
@@ -64,10 +68,12 @@ export const useNotes = (settings: ReturnType<typeof useStorage<Settings>>) => {
             ? Date.now()
             : (existing?.updatedAt ?? Date.now());
         const next = notes.value.filter((note) => note.id !== noteId);
+        const file = existing?.file ?? (pendingFile.value || undefined);
         next.push({
             id: noteId,
-            title: normalizeTitle(content),
+            title: titleFor(content, file),
             updatedAt,
+            ...(file ? { file } : {}),
         });
         notes.value = sortAndTrimNotes(next);
     };
@@ -79,6 +85,7 @@ export const useNotes = (settings: ReturnType<typeof useStorage<Settings>>) => {
         if (!isContentEmpty(content)) {
             setNoteContent(noteId, content);
             upsertNoteMeta(noteId, content, true);
+            pendingFile.value = null;
         }
         return noteId;
     };
@@ -86,6 +93,7 @@ export const useNotes = (settings: ReturnType<typeof useStorage<Settings>>) => {
     const clearActiveNote = () => {
         activeNoteId.value = "";
         activeNoteInStorage.value = "";
+        pendingFile.value = null;
         isLoadingNote.value = true;
         value.value = "";
         isLoadingNote.value = false;
@@ -131,8 +139,9 @@ export const useNotes = (settings: ReturnType<typeof useStorage<Settings>>) => {
             }
             next.push({
                 id: note.id,
-                title: normalizeTitle(content),
+                title: titleFor(content, note.file),
                 updatedAt: note.updatedAt,
+                ...(note.file ? { file: note.file } : {}),
             });
         });
         notes.value = sortAndTrimNotes(next);
@@ -160,6 +169,7 @@ export const useNotes = (settings: ReturnType<typeof useStorage<Settings>>) => {
     const openNote = (noteId: string, persistAsLast = true) => {
         const content = getNoteContent(noteId);
         activeNoteId.value = noteId;
+        pendingFile.value = null;
         if (persistAsLast) {
             activeNoteInStorage.value = noteId;
         }
@@ -170,6 +180,18 @@ export const useNotes = (settings: ReturnType<typeof useStorage<Settings>>) => {
         value.value = content;
         isLoadingNote.value = false;
     };
+
+    /** Start a new note from an opened file, remembering its name/type for saving later. */
+    const newNoteFromFile = (content: string, file: FileMeta) => {
+        newNote();
+        pendingFile.value = file;
+        value.value = content; // the App watcher persists it and attaches `pendingFile`
+    };
+
+    // File details of the active note (or of the file just opened but not yet saved).
+    const activeFile = computed<FileMeta | null>(
+        () => notes.value.find((note) => note.id === activeNoteId.value)?.file ?? pendingFile.value,
+    );
 
     const initializeNotes = () => {
         cleanupEmptySavedNotes();
@@ -209,6 +231,8 @@ export const useNotes = (settings: ReturnType<typeof useStorage<Settings>>) => {
         activeNoteInStorage,
         isLoadingNote,
         value,
+        activeFile,
+        newNoteFromFile,
         openNote,
         newNote,
         deleteNote,
