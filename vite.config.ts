@@ -10,11 +10,11 @@ export default defineConfig({
         tailwindcss(),
         VitePWA({
             registerType: "prompt",
-            includeAssets: ["icon.svg", "dark.png", "light.png", "browserconfig.xml"],
+            includeAssets: ["icon.svg", "dark.png", "light.png", "og-image.png", "browserconfig.xml"],
             manifest: {
                 name: "Editor - Simple Web Text Editor",
                 short_name: "Editor",
-                description: "A simple text editor to edit quickly on the web",
+                description: "A fast, distraction-free text editor in your browser with notes, file drag & drop, shortcuts and offline support.",
                 theme_color: "#ffffff",
                 background_color: "#ffffff",
                 display: "standalone",
@@ -49,14 +49,14 @@ export default defineConfig({
                 screenshots: [
                     {
                         src: "light.png",
-                        sizes: "2047x1386",
+                        sizes: "2048x1386",
                         type: "image/png",
                         form_factor: "wide",
                         label: "Light theme",
                     },
                     {
                         src: "dark.png",
-                        sizes: "2047x1386",
+                        sizes: "2048x1386",
                         type: "image/png",
                         form_factor: "wide",
                         label: "Dark theme",

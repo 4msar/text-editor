@@ -28,8 +28,10 @@ const checkIfInstalled = () => {
     }
 };
 
+// Don't call e.preventDefault(): it only suppresses the mobile mini-infobar
+// (our button is desktop-only) and triggers a Chrome "Banner not shown" warning.
+// The saved event can still be prompted later from the install button.
 const handleBeforeInstallPrompt = (e: Event) => {
-    e.preventDefault();
     deferredPrompt.value = e;
     isInstallable.value = true;
 };
@@ -53,12 +55,16 @@ onUnmounted(() => {
 });
 
 const installPWA = async () => {
-    if (deferredPrompt.value) {
-        (deferredPrompt.value as any).prompt();
+    if (!deferredPrompt.value) return;
+    try {
+        await (deferredPrompt.value as any).prompt();
         const { outcome } = await (deferredPrompt.value as any).userChoice;
         if (outcome === 'accepted') {
             toast.success('Installing app…');
         }
+    } catch {
+        // Prompt already used (e.g. via the browser's own install UI)
+    } finally {
         deferredPrompt.value = null;
         isInstallable.value = false;
     }

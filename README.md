@@ -1,25 +1,28 @@
 # Text Editor
 
-A clean, simple, and powerful web-based text editor built with Vue 3, TypeScript, and Tailwind CSS. Perfect for quick note-taking, writing, and editing various file formats directly in your browser.
+A fast, distraction-free text editor that runs in your browser. Keep multiple notes, open or drag & drop text files, and keep writing offline – free, no sign-up, and everything stays on your device. Built with Vue 3, TypeScript and Tailwind CSS.
+
+![Editor – light and dark themes](./public/og-image.png)
 
 ## ✨ Features
 
-- **📝 Rich Text Editing**: Clean, distraction-free writing experience with a monospace font
-- **🌓 Dark/Light Mode**: Toggle between themes or use system default
-- **📊 Real-time Stats**: Live character, word, and line counting
-- **📁 File Support**: Drag & drop files or open with keyboard shortcuts
-- **⌨️ Keyboard Shortcuts**: Efficient text formatting and file operations
-- **🎨 Syntax Detection**: Automatic language detection for code highlighting
-- **💾 Auto-save**: Content automatically persists in local storage
-- **⚙️ Customizable**: Adjustable font size and theme preferences
-- **📱 Responsive**: Works great on desktop and mobile devices
+- **📝 Distraction-free writing** – a clean, full-screen monospace editor that opens instantly
+- **🗂️ Multiple notes** – a searchable notes sidebar (pin it open or toggle it), keeping up to 50 recent notes
+- **💾 Auto-save** – every note is saved in your browser's local storage; nothing leaves your device
+- **📁 Open any text file** – browse with a shortcut or drag & drop a file onto the editor, and download a note back as a file
+- **⌨️ Keyboard shortcuts** – formatting, case changes, indent/outdent and note management without touching the mouse
+- **📊 Live status bar** – cursor position, words, characters, lines, reading time and the detected language of code blocks
+- **🌓 Light, dark and system themes** – with a smooth reveal animation when you switch
+- **⚙️ Customizable** – font size, layout (Auto, Box or Full width), logo visibility and new-note behavior
+- **📱 Installable PWA** – install it like a desktop/mobile app and keep writing offline
 
 ## 🚀 Demo
 
 **Live Demo**: [https://text.msar.me](https://text.msar.me)
 
-![Light Mode Demo](./public/light.png)
-![Dark Mode Demo](./public/dark.png)
+| Light | Dark |
+| --- | --- |
+| ![Light theme](./public/light.png) | ![Dark theme](./public/dark.png) |
 
 ## 🔧 Installation
 
@@ -47,36 +50,47 @@ yarn dev
 
 ## 📖 Usage
 
-### Basic Editing
-- Start typing in the main text area
-- Your content is automatically saved to local storage
-- Use the status bar to monitor character, word, and line counts
+### Notes
+- Start typing – your note is saved automatically
+- Press `Alt+N` (`⌥N` on Mac) to start a new note and `Alt+L` (`⌥L`) to show or hide the notes list
+- Search notes from the sidebar, or pin the sidebar to keep it open
 
-### File Operations
-- **Open File**: Press `Ctrl+O` (or `Cmd+O` on Mac) to browse and open a file
-- **Drag & Drop**: Simply drag a file from your computer into the editor
-- **Supported Formats**: Text files, Markdown, JSON, JavaScript, TypeScript, HTML, CSS, Vue, and many more
+### Files
+- **Open a file**: `Ctrl+O` / `⌘O`, or drag & drop a file onto the editor (up to 4 MB)
+- **Download a note**: `Ctrl+S` / `⌘S`
+- **Supported formats**: plain text, Markdown, JSON, YAML, source code and many more (see below)
 
 ### Keyboard Shortcuts
-- `Ctrl+O` / `Cmd+O` - Open file
-- `Ctrl+,` / `Cmd+,` - Open settings
-- `Ctrl+B` / `Cmd+B` - Bold text
-- `Ctrl+I` / `Cmd+I` - Italic text
-- `Ctrl+U` / `Cmd+U` - Underline text
-- `Ctrl+K` / `Cmd+K` - Insert link
+
+| Action | Windows / Linux | macOS |
+| --- | --- | --- |
+| Open file | `Ctrl+O` | `⌘O` |
+| Download note | `Ctrl+S` | `⌘S` |
+| Settings | `Ctrl+,` | `⌘,` |
+| Help (all shortcuts) | `Ctrl+/` | `⌘/` |
+| Close dialog / panel | `Esc` | `Esc` |
+| New note | `Alt+N` | `⌥N` |
+| Toggle notes list | `Alt+L` | `⌥L` |
+| Bold / Italic / Underline | `Ctrl+B` / `Ctrl+I` / `Ctrl+U` | `⌘B` / `⌘I` / `⌘U` |
+| Insert link | `Ctrl+K` | `⌘K` |
+| Lowercase / Uppercase selection | `Ctrl+Shift+L` / `Ctrl+Shift+U` | `⌘⇧L` / `⌘⇧U` |
+| Indent / Outdent | `Tab` / `Shift+Tab` | `Tab` / `⇧Tab` |
 
 ### Settings
-Press `Ctrl+,` (or `Cmd+,` on Mac) to access settings:
-- **Theme**: Choose between Light, Dark, or System Default
-- **Font Size**: Adjust the editor font size for comfortable reading
+Press `Ctrl+,` (`⌘,` on Mac) to open settings:
+- **Theme** – Light, Dark or System
+- **Layout** – Auto, Box or Full width
+- **Show logo** – show or hide the logo in Box layout
+- **New note behavior** – reopen the last note or start fresh
+- **Font size** – make the editor text larger or smaller
 
 ## 🎯 Supported File Types
 
 The editor supports a wide range of file formats including:
 
-**Text & Documentation**: `.txt`, `.md`, `.csv`, `.log`  
+**Text & Documentation**: `.txt`, `.md`, `.csv`, `.log`, `.tex`  
 **Web Technologies**: `.html`, `.css`, `.scss`, `.sass`, `.less`, `.js`, `.ts`, `.jsx`, `.tsx`, `.vue`  
-**Programming Languages**: `.py`, `.java`, `.cpp`, `.c`, `.h`, `.php`, `.rb`, `.go`, `.rs`, `.swift`, `.kt`  
+**Programming Languages**: `.py`, `.java`, `.cpp`, `.c`, `.h`, `.php`, `.rb`, `.go`, `.rs`, `.swift`, `.kt`, `.dart`, `.lua`, `.sh`, `.sql`  
 **Data & Config**: `.json`, `.xml`, `.yaml`, `.yml`, `.ini`, `.cfg`, `.conf`, `.env`, `.toml`  
 **And many more...**
 
@@ -99,9 +113,11 @@ yarn preview
 ### Tech Stack
 - **Framework**: Vue 3 with Composition API
 - **Language**: TypeScript
-- **Styling**: Tailwind CSS
+- **Styling**: Tailwind CSS v4
 - **Build Tool**: Vite
 - **State Management**: VueUse (for localStorage and utilities)
+- **Animation**: motion-v
+- **PWA**: vite-plugin-pwa
 
 ## 🤝 Contributing
 

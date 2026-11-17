@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { AnimatePresence, motion, useAnimate } from "motion-v";
-import { detectLanguage, getLanguageClass } from "../lib/language-detection";
 import { handleEditorKeydown } from "../lib/editor-commands";
 import { useSettings } from "../lib/use-settings";
-import { cn } from "../lib/utils";
 import { placeholderTexts } from "../lib/data";
 import Logo from "./Logo.vue";
 
@@ -23,7 +21,6 @@ const inputRef = ref<HTMLTextAreaElement | null>(null);
 const settings = useSettings();
 const [scope, animate] = useAnimate();
 
-const languageClass = computed(() => getLanguageClass(detectLanguage(value.value) ?? "plaintext"));
 const isBox = computed(() => settings.value.ui === "box");
 
 const emitCursor = () => {
@@ -85,7 +82,6 @@ defineExpose({ focus: () => inputRef.value?.focus() });
                 spellcheck="true"
                 aria-label="Editor"
                 class="editor bg-editor size-full resize-none p-4 pb-9 font-mono text-base text-black caret-blue-600 outline-none selection:bg-blue-500/25 placeholder:text-slate-400 dark:text-white dark:caret-blue-400 dark:placeholder:text-slate-600"
-                :class="cn(languageClass)"
                 :placeholder="placeholderTexts.join('\n')"
                 :style="{ fontSize: `${settings.fontSize}px`, tabSize: 4 }"
                 @keydown="handleEditorKeydown"
