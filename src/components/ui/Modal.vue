@@ -15,7 +15,9 @@ watch(
         if (open) {
             previouslyFocused = document.activeElement as HTMLElement | null;
             await nextTick();
-            panel.value?.focus();
+            // Let content opt in to initial focus with `data-autofocus`; fall back to the panel itself.
+            const target = panel.value?.querySelector<HTMLElement>("[data-autofocus]") ?? panel.value;
+            target?.focus();
         } else {
             previouslyFocused?.focus?.();
         }

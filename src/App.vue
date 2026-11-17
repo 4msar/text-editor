@@ -6,11 +6,11 @@ import StatusBar from "./components/StatusBar.vue";
 import Editor, { type CursorInfo } from "./components/Editor.vue";
 import SettingDialog from "./components/SettingDialog.vue";
 import HelpDialog from "./components/HelpDialog.vue";
+import DownloadDialog from "./components/DownloadDialog.vue";
 import RecentNotesSidebar from "./components/RecentNotesSidebar.vue";
 import DropOverlay from "./components/DropOverlay.vue";
 import Toaster from "./components/ui/Toaster.vue";
 import { useKeyboardShortcut } from "./lib/use-keyboard-shortcut";
-import { handleDownload } from "./lib/utils";
 import { useNotes } from "./lib/use-notes";
 import { useSettings } from "./lib/use-settings";
 import { useFileHandling } from "./lib/use-file-handling";
@@ -23,6 +23,8 @@ const inputRef = ref<HTMLInputElement | null>(null);
 const editorRef = ref<InstanceType<typeof Editor> | null>(null);
 const settingDialogOpen = ref(false);
 const helpDialogOpen = ref(false);
+const downloadDialogOpen = ref(false);
+const downloadDialogRef = ref<InstanceType<typeof DownloadDialog> | null>(null);
 const sidebarOpen = ref(false);
 const cursor = ref<CursorInfo>({ line: 1, column: 1, selected: 0 });
 const saved = ref(false);
@@ -130,11 +132,14 @@ const download = () => {
         toast("Nothing to download yet");
         return;
     }
-    // Files keep their original name, extension and MIME type when saved back.
-    const name = activeFile.value
-        ? handleDownload(value.value, activeFile.value.name, activeFile.value.type)
-        : handleDownload(value.value);
-    toast.success(`Downloaded ${name}`);
+    // Pressing the shortcut again while the dialog is open confirms the download.
+    if (downloadDialogOpen.value) {
+        downloadDialogRef.value?.submit();
+        return;
+    }
+    settingDialogOpen.value = false;
+    helpDialogOpen.value = false;
+    downloadDialogOpen.value = true;
 };
 
 const handleFocus = () => {
@@ -227,6 +232,13 @@ onUnmounted(() => {
             </motion.div>
             <SettingDialog :open="settingDialogOpen" @close="settingDialogOpen = false" />
             <HelpDialog :open="helpDialogOpen" @close="helpDialogOpen = false" />
+            <DownloadDialog
+                ref="downloadDialogRef"
+                :open="downloadDialogOpen"
+                :value="value"
+                :file="activeFile ?? undefined"
+                @close="downloadDialogOpen = false"
+            />
             <DropOverlay :show="isDragging" />
             <Toaster />
         </main>
