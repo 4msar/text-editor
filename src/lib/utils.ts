@@ -1,16 +1,20 @@
 export const cn = (...classes: (string | false | null | undefined)[]) => classes.filter(Boolean).join(" ");
 
-export const formatDate = (date: Date): string => {
-    // expected format: "Wed, 03 Jul, 12:00 AM"
+export type ClockFormat = { hourFormat: "12h" | "24h"; showDate: boolean; showSeconds: boolean };
+
+export const formatDate = (
+    date: Date,
+    { hourFormat = "12h", showDate = true, showSeconds = false }: Partial<ClockFormat> = {},
+): string => {
+    // default format: "Wed, 03 Jul, 12:00 AM"
     const options: Intl.DateTimeFormatOptions = {
-        weekday: "short",
-        day: "2-digit",
-        month: "short",
+        ...(showDate && { weekday: "short", day: "2-digit", month: "short" }),
         hour: "2-digit",
         minute: "2-digit",
-        hour12: true,
+        ...(showSeconds && { second: "2-digit" }),
+        hourCycle: hourFormat === "24h" ? "h23" : "h12",
     };
-    return date.toLocaleDateString("en-US", options);
+    return date.toLocaleString("en-US", options);
 };
 
 export const formatRelative = (timestamp: number): string => {

@@ -6,9 +6,12 @@ import ThemeToggle from "./ThemeToggle.vue";
 import GithubButton from "./GithubButton.vue";
 import PWAInstall from "./PWAInstall.vue";
 import IconButton from "./ui/IconButton.vue";
-import { detectLanguage } from "../lib/language-detection";
 import { modKey } from "../lib/data";
 import type { CursorInfo } from "./Editor.vue";
+import { useSettings } from "../lib/use-settings";
+
+const settings = useSettings();
+const show = computed(() => settings.value.statusBar);
 
 const props = defineProps<{
     value: string;
@@ -33,8 +36,6 @@ const stats = computed(() => {
         minutes: Math.max(1, Math.round(words / 220)),
     };
 });
-
-const language = computed(() => detectLanguage(props.value));
 </script>
 
 <template>
@@ -50,10 +51,16 @@ const language = computed(() => detectLanguage(props.value));
                 >
                     {{ fileName }}
                 </span>
-                <span class="hidden md:inline">Ln {{ cursor.line }}, Col {{ cursor.column }}</span>
+                <span v-if="show.cursor" class="hidden md:inline">Ln {{ cursor.line }}, Col {{ cursor.column }}</span>
+                <span v-if="show.words">{{ stats.words }} words</span>
+                <span v-if="show.chars" class="hidden sm:inline">{{ stats.chars }} chars</span>
+                <span v-if="show.lines" class="hidden lg:inline">{{ stats.lines }} lines</span>
+                <span v-if="show.readTime && stats.words > 50" class="hidden lg:inline"
+                    >~{{ stats.minutes }} min read</span
+                >
                 <AnimatePresence>
                     <motion.span
-                        v-if="cursor.selected > 0"
+                        v-if="show.selection && cursor.selected > 0"
                         key="sel"
                         class="hidden rounded bg-blue-500/15 px-1.5 text-blue-700 md:inline dark:text-blue-300"
                         :initial="{ opacity: 0, scale: 0.8 }"
@@ -61,22 +68,6 @@ const language = computed(() => detectLanguage(props.value));
                         :exit="{ opacity: 0, scale: 0.8 }"
                     >
                         {{ cursor.selected }} selected
-                    </motion.span>
-                </AnimatePresence>
-                <span>{{ stats.words }} words</span>
-                <span class="hidden sm:inline">{{ stats.chars }} chars</span>
-                <span class="hidden lg:inline">{{ stats.lines }} lines</span>
-                <span v-if="stats.words > 50" class="hidden lg:inline">~{{ stats.minutes }} min read</span>
-                <AnimatePresence>
-                    <motion.span
-                        v-if="language"
-                        :key="language"
-                        class="hidden rounded bg-slate-300/70 px-1.5 capitalize md:inline dark:bg-slate-700"
-                        :initial="{ opacity: 0, y: 6 }"
-                        :animate="{ opacity: 1, y: 0 }"
-                        :exit="{ opacity: 0, y: -6 }"
-                    >
-                        {{ language }}
                     </motion.span>
                 </AnimatePresence>
                 <AnimatePresence>
@@ -88,8 +79,21 @@ const language = computed(() => detectLanguage(props.value));
                         :animate="{ opacity: 1, x: 0 }"
                         :exit="{ opacity: 0 }"
                     >
-                        <svg class="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <motion.path d="M5 12l5 5L20 7" :initial="{ pathLength: 0 }" :animate="{ pathLength: 1 }" :transition="{ duration: 0.3 }" />
+                        <svg
+                            class="size-3"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <motion.path
+                                d="M5 12l5 5L20 7"
+                                :initial="{ pathLength: 0 }"
+                                :animate="{ pathLength: 1 }"
+                                :transition="{ duration: 0.3 }"
+                            />
                         </svg>
                         <span class="hidden sm:inline">Saved</span>
                     </motion.span>
@@ -99,14 +103,38 @@ const language = computed(() => detectLanguage(props.value));
             <div class="flex shrink-0 items-center gap-1.5">
                 <PWAInstall />
                 <IconButton :title="`Open file (${modKey}+O)`" @click="$emit('open-file')">
-                    <svg class="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2" />
+                    <svg
+                        class="size-3"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <path
+                            d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"
+                        />
                     </svg>
                 </IconButton>
                 <AnimatePresence>
-                    <motion.div v-if="value" key="dl" :initial="{ opacity: 0, width: 0 }" :animate="{ opacity: 1, width: 'auto' }" :exit="{ opacity: 0, width: 0 }">
+                    <motion.div
+                        v-if="value"
+                        key="dl"
+                        :initial="{ opacity: 0, width: 0 }"
+                        :animate="{ opacity: 1, width: 'auto' }"
+                        :exit="{ opacity: 0, width: 0 }"
+                    >
                         <IconButton :title="`Download (${modKey}+S)`" @click="$emit('download')">
-                            <svg class="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg
+                                class="size-3"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
                                 <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
                                 <path d="M14 2v4a2 2 0 0 0 2 2h4" />
                                 <path d="M12 18v-6" />
@@ -116,14 +144,33 @@ const language = computed(() => detectLanguage(props.value));
                     </motion.div>
                 </AnimatePresence>
                 <IconButton :title="`Shortcuts (${modKey}+/)`" @click="$emit('open-help')">
-                    <svg class="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg
+                        class="size-3"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
                         <circle cx="12" cy="12" r="10" />
                         <path d="M12 16v-4" />
                         <path d="M12 8h.01" />
                     </svg>
                 </IconButton>
-                <IconButton :title="`Settings (${modKey}+,)`" class="[&:hover_svg]:rotate-90" @click="$emit('open-setting')">
-                    <svg class="size-3 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
+                <IconButton
+                    :title="`Settings (${modKey}+,)`"
+                    class="[&:hover_svg]:rotate-90"
+                    @click="$emit('open-setting')"
+                >
+                    <svg
+                        class="size-3 transition-transform duration-300"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linejoin="round"
+                    >
                         <path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                         <path
                             d="M10.47 4.32c.602-1.306 2.458-1.306 3.06 0l.218.473a1.684 1.684 0 0 0 2.112.875l.49-.18c1.348-.498 2.66.814 2.162 2.163l-.18.489a1.684 1.684 0 0 0 .875 2.112l.474.218c1.305.602 1.305 2.458 0 3.06l-.474.218a1.684 1.684 0 0 0-.875 2.112l.18.49c.498 1.348-.814 2.66-2.163 2.162l-.489-.18a1.684 1.684 0 0 0-2.112.875l-.218.473c-.602 1.306-2.458 1.306-3.06 0l-.218-.473a1.684 1.684 0 0 0-2.112-.875l-.49.18c-1.348.498-2.66-.814-2.163-2.163l.181-.489a1.684 1.684 0 0 0-.875-2.112l-.474-.218c-1.305-.602-1.305-2.458 0-3.06l.474-.218a1.684 1.684 0 0 0 .875-2.112l-.18-.49c-.498-1.348.814-2.66 2.163-2.163l.489.181a1.684 1.684 0 0 0 2.112-.875l.218-.474Z"
@@ -132,7 +179,7 @@ const language = computed(() => detectLanguage(props.value));
                 </IconButton>
                 <ThemeToggle />
                 <GithubButton />
-                <Time class="ml-1 hidden tabular-nums sm:inline" />
+                <Time v-if="show.time" class="ml-1 hidden tabular-nums sm:inline" />
             </div>
         </div>
     </div>
