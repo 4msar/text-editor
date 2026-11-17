@@ -7,6 +7,7 @@ import Modal from "./ui/Modal.vue";
 import SegmentedControl from "./ui/SegmentedControl.vue";
 import { formatDate } from "../lib/utils";
 import type { StatusBarItem } from "../type";
+import GithubButton from "./GithubButton.vue";
 
 defineProps<{ open: boolean }>();
 defineEmits<{ (e: "close"): void }>();
@@ -223,14 +224,37 @@ const fontSize = computed({
 
         <template #footer>
             <div class="flex items-center justify-between">
-                <a
-                    href="https://msar.me/contact"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="text-xs text-slate-500 hover:text-slate-900 hover:underline dark:text-slate-400 dark:hover:text-white"
-                >
-                    Contact
-                </a>
+                <div class="flex items-center gap-2">
+                    <motion.a
+                        href="https://msar.me/contact?open=form"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title="Contact me"
+                        class="hidden size-5 items-center justify-center rounded-md text-slate-600 transition-colors hover:bg-slate-300/60 hover:text-slate-900 md:inline-flex dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-white"
+                        aria-label="Contact me"
+                        :whileHover="{ scale: 1.12, rotate: -8 }"
+                        :whilePress="{ scale: 0.88 }"
+                    >
+                        <svg
+                            fill="none"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="size-3 stroke-current"
+                            aria-hidden="true"
+                            viewBox="0 0 24 24"
+                            version="1.1"
+                            data-view-component="true"
+                        >
+                            <path
+                                d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"
+                            />
+                            <path d="m21.854 2.147-10.94 10.939" />
+                        </svg>
+                    </motion.a>
+                    <GithubButton />
+                </div>
+
                 <motion.button
                     type="button"
                     :whilePress="{ scale: 0.95 }"

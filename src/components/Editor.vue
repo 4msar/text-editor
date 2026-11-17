@@ -82,7 +82,7 @@ defineExpose({ focus: () => inputRef.value?.focus() });
         :animate="{ opacity: 1, scale: 1, y: 0 }"
         :transition="{ type: 'spring', stiffness: 260, damping: 28 }"
     >
-        <div ref="scope" class="size-full">
+        <div ref="scope" class="relative size-full">
             <textarea
                 id="editor"
                 ref="inputRef"
@@ -90,7 +90,7 @@ defineExpose({ focus: () => inputRef.value?.focus() });
                 autofocus
                 spellcheck="true"
                 aria-label="Editor"
-                class="editor bg-editor size-full resize-none p-4 pb-9 font-mono text-base text-black caret-blue-600 outline-none selection:bg-blue-500/25 placeholder:text-slate-400 dark:text-white dark:caret-blue-400 dark:placeholder:text-slate-600"
+                class="editor bg-editor size-full resize-none p-4 pb-9 font-mono text-base text-black caret-blue-600 outline-none selection:bg-blue-500/25 placeholder:text-slate-400 dark:text-slate-300 dark:caret-blue-400 dark:placeholder:text-slate-600"
                 :placeholder="placeholderTexts.join('\n')"
                 :style="editorStyle"
                 @keydown="handleEditorKeydown"
@@ -99,6 +99,13 @@ defineExpose({ focus: () => inputRef.value?.focus() });
                 @click="emitCursor"
                 @select="emitCursor"
                 @input="emitCursor"
+            />
+            <!-- Column guides for the centered layout: same font metrics as the textarea so `ch` matches the text width. -->
+            <div
+                v-if="isCentered"
+                aria-hidden="true"
+                class="pointer-events-none absolute inset-y-0 left-1/2 hidden -translate-x-1/2 border-x border-slate-200 font-mono md:block dark:border-slate-800"
+                :style="{ fontSize: `${settings.fontSize}px`, width: 'min(calc(80ch + 3rem), 100% - 1rem)' }"
             />
         </div>
     </motion.div>

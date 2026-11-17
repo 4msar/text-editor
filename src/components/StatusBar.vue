@@ -178,7 +178,6 @@ const stats = computed(() => {
                     </svg>
                 </IconButton>
                 <ThemeToggle />
-                <GithubButton />
                 <Time v-if="show.time" class="ml-1 hidden tabular-nums sm:inline" />
             </div>
         </div>
