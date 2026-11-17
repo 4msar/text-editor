@@ -1,6 +1,6 @@
 export type Settings = {
     fontSize: string;
-    ui: "fluid" | "box" | "auto";
+    ui: "fluid" | "box" | "centered" | "auto";
     showLogo: boolean;
     newNoteBehavior: "open-last" | "start-fresh";
     sidebarPinned: boolean;

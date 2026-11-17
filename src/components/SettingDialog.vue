@@ -63,10 +63,43 @@ const fontSize = computed({
                     :options="[
                         { value: 'auto', label: 'Auto' },
                         { value: 'box', label: 'Box' },
+                        { value: 'centered', label: 'Centered' },
                         { value: 'fluid', label: 'Full width' },
                     ]"
                 />
             </section>
+
+            <AnimatePresence>
+                <motion.section
+                    v-if="settings.ui === 'box'"
+                    key="logo"
+                    class="overflow-hidden"
+                    :initial="{ height: 0, opacity: 0 }"
+                    :animate="{ height: 'auto', opacity: 1 }"
+                    :exit="{ height: 0, opacity: 0 }"
+                    :transition="{ duration: 0.2 }"
+                >
+                    <label class="flex cursor-pointer items-center justify-between gap-4">
+                        <span>
+                            <span class="block font-medium">Show logo</span>
+                            <span class="text-xs text-slate-500 dark:text-slate-400"
+                                >Display the logo above the editor box</span
+                            >
+                        </span>
+                        <input v-model="settings.showLogo" type="checkbox" class="peer sr-only" />
+                        <span
+                            class="relative inline-flex h-6 w-11 shrink-0 items-center rounded-full p-0.5 transition-colors peer-focus-visible:outline-2 peer-focus-visible:outline-blue-500"
+                            :class="settings.showLogo ? 'bg-blue-600' : 'bg-slate-300 dark:bg-slate-700'"
+                        >
+                            <motion.span
+                                class="size-5 rounded-full bg-white shadow"
+                                :animate="{ x: settings.showLogo ? 20 : 0 }"
+                                :transition="{ type: 'spring', stiffness: 600, damping: 32 }"
+                            />
+                        </span>
+                    </label>
+                </motion.section>
+            </AnimatePresence>
 
             <section class="space-y-2">
                 <div class="flex items-center justify-between">
@@ -113,38 +146,6 @@ const fontSize = computed({
                     The quick brown fox
                 </p>
             </section>
-
-            <AnimatePresence>
-                <motion.section
-                    v-if="settings.ui === 'box'"
-                    key="logo"
-                    class="overflow-hidden"
-                    :initial="{ height: 0, opacity: 0 }"
-                    :animate="{ height: 'auto', opacity: 1 }"
-                    :exit="{ height: 0, opacity: 0 }"
-                    :transition="{ duration: 0.2 }"
-                >
-                    <label class="flex cursor-pointer items-center justify-between gap-4">
-                        <span>
-                            <span class="block font-medium">Show logo</span>
-                            <span class="text-xs text-slate-500 dark:text-slate-400"
-                                >Display the logo above the editor box</span
-                            >
-                        </span>
-                        <input v-model="settings.showLogo" type="checkbox" class="peer sr-only" />
-                        <span
-                            class="relative inline-flex h-6 w-11 shrink-0 items-center rounded-full p-0.5 transition-colors peer-focus-visible:outline-2 peer-focus-visible:outline-blue-500"
-                            :class="settings.showLogo ? 'bg-blue-600' : 'bg-slate-300 dark:bg-slate-700'"
-                        >
-                            <motion.span
-                                class="size-5 rounded-full bg-white shadow"
-                                :animate="{ x: settings.showLogo ? 20 : 0 }"
-                                :transition="{ type: 'spring', stiffness: 600, damping: 32 }"
-                            />
-                        </span>
-                    </label>
-                </motion.section>
-            </AnimatePresence>
 
             <section class="space-y-2">
                 <h3 class="font-medium">When opening a new tab</h3>

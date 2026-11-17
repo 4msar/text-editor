@@ -22,6 +22,15 @@ const settings = useSettings();
 const [scope, animate] = useAnimate();
 
 const isBox = computed(() => settings.value.ui === "box");
+const isCentered = computed(() => settings.value.ui === "centered");
+
+// Centered layout keeps the textarea full-width (scrollbar stays at the window edge) and pads the text into a
+// readable column. Sized in `ch` so the column follows the font size.
+const editorStyle = computed(() => ({
+    fontSize: `${settings.value.fontSize}px`,
+    tabSize: 4,
+    ...(isCentered.value && { paddingInline: "max(1rem, calc((100% - 80ch) / 2))", paddingTop: "3rem" }),
+}));
 
 const emitCursor = () => {
     const el = inputRef.value;
@@ -83,7 +92,7 @@ defineExpose({ focus: () => inputRef.value?.focus() });
                 aria-label="Editor"
                 class="editor bg-editor size-full resize-none p-4 pb-9 font-mono text-base text-black caret-blue-600 outline-none selection:bg-blue-500/25 placeholder:text-slate-400 dark:text-white dark:caret-blue-400 dark:placeholder:text-slate-600"
                 :placeholder="placeholderTexts.join('\n')"
-                :style="{ fontSize: `${settings.fontSize}px`, tabSize: 4 }"
+                :style="editorStyle"
                 @keydown="handleEditorKeydown"
                 @focus="emit('onFocus')"
                 @keyup="emitCursor"
