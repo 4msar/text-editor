@@ -104,7 +104,7 @@ defineExpose({ focus: () => inputRef.value?.focus() });
             <div
                 v-if="isCentered"
                 aria-hidden="true"
-                class="pointer-events-none absolute inset-y-0 left-1/2 hidden -translate-x-1/2 border-x border-slate-200 font-mono md:block dark:border-slate-800"
+                class="pointer-events-none absolute inset-y-0 left-1/2 hidden -translate-x-1/2 border-x border-dotted border-slate-200 font-mono md:block dark:border-slate-800"
                 :style="{ fontSize: `${settings.fontSize}px`, width: 'min(calc(80ch + 3rem), 100% - 1rem)' }"
             />
         </div>
