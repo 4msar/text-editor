@@ -5,7 +5,7 @@ import Time from "./Time.vue";
 import ThemeToggle from "./ThemeToggle.vue";
 import PWAInstall from "./PWAInstall.vue";
 import IconButton from "./ui/IconButton.vue";
-import { modKey } from "../lib/data";
+import { altKey, modKey } from "../lib/data";
 import type { CursorInfo } from "./Editor.vue";
 import { useSettings } from "../lib/use-settings";
 
@@ -17,6 +17,7 @@ const props = defineProps<{
     fileName?: string;
     cursor: CursorInfo;
     saved: boolean;
+    preview: boolean;
 }>();
 
 defineEmits<{
@@ -24,6 +25,7 @@ defineEmits<{
     (e: "open-help"): void;
     (e: "open-file"): void;
     (e: "download"): void;
+    (e: "toggle-preview"): void;
 }>();
 
 const stats = computed(() => {
@@ -100,6 +102,40 @@ const stats = computed(() => {
             </div>
 
             <div class="flex shrink-0 items-center gap-1.5">
+                <IconButton
+                    :title="preview ? `Back to editing (${altKey}+P)` : `Preview markdown (${altKey}+P)`"
+                    :active="preview"
+                    :aria-pressed="preview"
+                    @click="$emit('toggle-preview')"
+                >
+                    <svg
+                        class="size-3"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <template v-if="preview">
+                            <path
+                                d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"
+                            />
+                            <circle cx="12" cy="12" r="3" />
+                        </template>
+                        <!-- Struck-through eye while editing. -->
+                        <template v-else>
+                            <path
+                                d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"
+                            />
+                            <path d="M14.084 14.158a3 3 0 0 1-4.242-4.242" />
+                            <path
+                                d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"
+                            />
+                            <path d="m2 2 20 20" />
+                        </template>
+                    </svg>
+                </IconButton>
                 <PWAInstall />
                 <IconButton :title="`Open file (${modKey}+O)`" @click="$emit('open-file')">
                     <svg

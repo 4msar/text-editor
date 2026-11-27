@@ -4,11 +4,12 @@ import { AnimatePresence, motion, useAnimate } from "motion-v";
 import { handleEditorKeydown } from "../lib/editor-commands";
 import { useSettings } from "../lib/use-settings";
 import { placeholderTexts } from "../lib/data";
+import { renderMarkdown } from "../lib/markdown";
 import Logo from "./Logo.vue";
 
 export type CursorInfo = { line: number; column: number; selected: number };
 
-const props = defineProps<{ switchKey: number }>();
+const props = defineProps<{ switchKey: number; preview?: boolean }>();
 
 const emit = defineEmits<{
     (e: "onFocus"): void;
@@ -32,6 +33,10 @@ const editorStyle = computed(() => ({
     ...(isCentered.value && { paddingInline: "max(1rem, calc((100% - 80ch) / 2))", paddingTop: "3rem" }),
 }));
 
+// Only parse while the preview is visible.
+const html = computed(() => (props.preview ? renderMarkdown(value.value) : ""));
+const previewRef = ref<HTMLElement | null>(null);
+
 const emitCursor = () => {
     const el = inputRef.value;
     if (!el) return;
@@ -49,12 +54,13 @@ watch(
         animate(scope.value, { opacity: [0.35, 1], y: [6, 0] }, { duration: 0.25, ease: "easeOut" });
         inputRef.value?.setSelectionRange(0, 0);
         inputRef.value?.scrollTo({ top: 0 });
+        previewRef.value?.scrollTo({ top: 0 });
         emitCursor();
     },
     { flush: "post" },
 );
 
-defineExpose({ focus: () => inputRef.value?.focus() });
+defineExpose({ focus: () => (props.preview ? previewRef.value : inputRef.value)?.focus() });
 </script>
 
 <template>
@@ -83,7 +89,21 @@ defineExpose({ focus: () => inputRef.value?.focus() });
         :transition="{ type: 'spring', stiffness: 260, damping: 28 }"
     >
         <div ref="scope" class="relative size-full">
+            <!-- Read-only markdown preview; content is sanitized in renderMarkdown. -->
+            <div
+                v-if="preview"
+                ref="previewRef"
+                tabindex="0"
+                role="document"
+                aria-label="Markdown preview"
+                class="bg-editor size-full overflow-y-auto p-4 pb-9 outline-none"
+                :style="editorStyle"
+            >
+                <div v-if="value.trim()" class="md-preview" v-html="html" />
+                <p v-else class="text-slate-400 italic dark:text-slate-600">Nothing to preview yet.</p>
+            </div>
             <textarea
+                v-else
                 id="editor"
                 ref="inputRef"
                 v-model="value"

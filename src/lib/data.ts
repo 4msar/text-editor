@@ -15,6 +15,7 @@ export const shortcuts: ShortcutInfo[] = [
     { keys: ["Esc"], label: "Close dialog / panel", group: "General" },
     { keys: [altKey, "N"], label: "New note", group: "Notes" },
     { keys: [altKey, "L"], label: "Toggle notes list", group: "Notes" },
+    { keys: [altKey, "P"], label: "Toggle markdown preview", group: "Notes" },
     { keys: [modKey, "B"], label: "Bold", group: "Formatting" },
     { keys: [modKey, "I"], label: "Italic", group: "Formatting" },
     { keys: [modKey, "U"], label: "Underline", group: "Formatting" },

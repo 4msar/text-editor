@@ -3650,6 +3650,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"marked@npm:^18.3.0":
+  version: 18.3.0
+  resolution: "marked@npm:18.3.0"
+  bin:
+    marked: bin/marked.js
+  checksum: 10c0/397a926e5ae58b66e1daf0edecdf7d7408889b782d79117a51cf59f36c01870a7b8b9734ff8eb6466ea05022b3e8acc767b4ec9c9be593098ecc415e57145e24
+  languageName: node
+  linkType: hard
+
 "math-intrinsics@npm:^1.1.0":
   version: 1.1.0
   resolution: "math-intrinsics@npm:1.1.0"
@@ -4497,6 +4506,7 @@ __metadata:
     "@vitejs/plugin-vue": "npm:^6.0.0"
     "@vue/tsconfig": "npm:^0.7.0"
     "@vueuse/core": "npm:^13.5.0"
+    marked: "npm:^18.3.0"
     motion-v: "npm:^2.12.0"
     tailwindcss: "npm:^4.1.11"
     typescript: "npm:~5.8.3"

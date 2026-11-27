@@ -26,6 +26,7 @@ const helpDialogOpen = ref(false);
 const downloadDialogOpen = ref(false);
 const downloadDialogRef = ref<InstanceType<typeof DownloadDialog> | null>(null);
 const sidebarOpen = ref(false);
+const preview = ref(false);
 const cursor = ref<CursorInfo>({ line: 1, column: 1, selected: 0 });
 const saved = ref(false);
 // Bumped only on explicit note switches (not when typing creates a note), drives the editor transition.
@@ -142,6 +143,11 @@ const download = () => {
     downloadDialogOpen.value = true;
 };
 
+const togglePreview = () => {
+    preview.value = !preview.value;
+    focusEditor();
+};
+
 const handleFocus = () => {
     sidebarOpen.value = false;
 };
@@ -176,6 +182,7 @@ useKeyboardShortcut(["cmd+/", "ctrl+/"], () => {
 useKeyboardShortcut(["cmd+s", "ctrl+s"], download);
 useKeyboardShortcut("alt+n", handleNewNote);
 useKeyboardShortcut("alt+l", toggleSidebar);
+useKeyboardShortcut("alt+p", togglePreview);
 // Dialogs handle (and preventDefault) their own Escape first; only then close the sidebar.
 useEventListener(window, "keydown", (event: KeyboardEvent) => {
     if (event.key === "Escape" && !event.defaultPrevented && sidebarOpen.value && !pinned.value) {
@@ -217,17 +224,19 @@ onUnmounted(() => {
                 :animate="{ left: pinned ? SIDEBAR_WIDTH : 0 }"
                 :transition="{ type: 'spring', stiffness: 380, damping: 36 }"
             >
-            <Editor ref="editorRef" v-model="value" :switch-key="switchKey" @on-focus="handleFocus" @cursor="cursor = $event" />
+            <Editor ref="editorRef" v-model="value" :switch-key="switchKey" :preview="preview" @on-focus="handleFocus" @cursor="cursor = $event" />
             <input ref="inputRef" id="fileInput" type="file" class="hidden" :accept="supportedFileType" @change="handleFileOpen" />
             <StatusBar
                 :value="value"
                 :file-name="activeFile?.name"
                 :cursor="cursor"
                 :saved="saved"
+                :preview="preview"
                 @open-setting="settingDialogOpen = true"
                 @open-help="helpDialogOpen = true"
                 @open-file="inputRef?.click()"
                 @download="download"
+                @toggle-preview="togglePreview"
             />
             </motion.div>
             <SettingDialog :open="settingDialogOpen" @close="settingDialogOpen = false" />
